@@ -71,33 +71,39 @@
       color: #2563eb;
       border: 2px solid #2563eb;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .btn-tertiary:hover {
       background-color: #f0f5ff;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+    .header-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
     }
   </style>
 </head>
 <body class="bg-gray-200 text-gray-800 font-inter">
-  <header class="bg-gray-200 py-6 sm:py-12">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center">
-      <a href="index.html" class="btn-tertiary px-6 py-3 rounded-lg font-semibold text-lg font-montserrat mb-4 sm:mb-0 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-        </svg>
-        Volver al inicio
-      </a>
-      <div class="text-center sm:text-right">
-        <h1 id="modalTitle" class="text-2xl sm:text-3xl font-bold text-gray-800 mb-1"></h1>
-        <p id="modalPrice" class="text-xl sm:text-2xl text-blue-600 font-medium mb-3"></p>
-        <div class="flex justify-center sm:justify-end gap-2">
-          <span id="modalTypeBadge" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm"></span>
-          <span id="modalOperationBadge" class="bg-purple-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm"></span>
-          <span id="modalLocationBadge" class="bg-gray-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm"></span>
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4 sm:gap-0">
+        <a href="index.html" class="btn-tertiary px-4 py-2 rounded-lg font-medium text-sm sm:text-base flex items-center self-start sm:self-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Volver 
+        </a>
+        <div class="text-center">
+          <h1 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-800 mb-1"></h1>
+          <p id="modalPrice" class="text-lg sm:text-2xl text-blue-600 font-medium mb-2 sm:mb-3"></p>
+          <div class="flex justify-center gap-2 flex-wrap">
+            <span id="modalTypeBadge" class="bg-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs"></span>
+            <span id="modalOperationBadge" class="bg-purple-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs"></span>
+            <span id="modalLocationBadge" class="bg-gray-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs"></span>
+          </div>
         </div>
+        
       </div>
+      <div class="header-divider my-2"></div>
     </div>
   </header>
   <main class="py-8 px-4 sm:px-6">
@@ -201,15 +207,12 @@
       </div>
     </div>
   </main>
-  <!-- Footer -->
   <footer class="bg-gray-200 py-10 px-4">
     <div class="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3 text-center sm:text-left">
-      <!-- Ubicasa -->
       <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-6 sm:pb-0 sm:pr-6">
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Ubify</h3>
         <p class="text-gray-600 text-sm sm:text-base font-inter">Propiedades en Villa Ángela - Chaco. Encuentra o publica ahora.</p>
       </div>
-      <!-- Contáctanos -->
       <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-6 sm:pb-0 sm:pr-6">
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Contáctanos</h3>
         <p class="text-gray-600 text-sm sm:text-base font-inter mb-2">¿Querés publicar una propiedad?</p>
@@ -218,23 +221,18 @@
           Quiero publicar
         </a>
       </div>
-      <!-- Seguinos -->
       <div>
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Seguinos</h3>
         <div class="flex justify-center sm:justify-start space-x-6">
           <a href="https://www.instagram.com/" target="_blank" class="hover:scale-110 transition-transform">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram" class="w-6 h-6 text-[#E4405F]" />
-
           </a>
           <a href="https://twitter.com/" target="_blank" class="hover:scale-110 transition-transform">
-           <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/x.svg" alt="X (Twitter)" class="w-6 h-6 opacity-70 hover:opacity-100" />
-
-
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/x.svg" alt="X (Twitter)" class="w-6 h-6 opacity-70 hover:opacity-100" />
           </a>
         </div>
       </div>
     </div>
-    <!-- Aviso legal -->
     <div class="max-w-4xl mx-auto mt-6 text-center text-gray-500 text-xs sm:text-sm font-inter">
       <p>Ubify es una plataforma digital para la publicación de propiedades en Villa Ángela, Chaco. No realiza intermediación inmobiliaria ni cobra comisiones por operaciones. Las negociaciones son responsabilidad exclusiva de las partes intervinientes.</p>
     </div>
