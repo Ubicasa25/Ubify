@@ -11,7 +11,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #e5e7eb;
+      background-color: #f8fafc;
       color: #1f2937;
     }
     h1, h2, h3 {
@@ -21,39 +21,39 @@
     }
     .form-input {
       background-color: #ffffff;
-      border: 1px solid #d1d5db;
-      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
       padding: 0.75rem;
       font-size: 0.875rem;
       color: #1f2937;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.2s ease;
     }
     .form-input:focus {
       border-color: #2563eb;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
     .btn-primary {
       background-image: linear-gradient(to right, #2563eb, #1d4ed8);
       color: #ffffff;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .btn-primary:hover {
       background-image: linear-gradient(to right, #1d4ed8, #1e40af);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .btn-secondary {
       background-color: #10b981;
       color: #ffffff;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .btn-secondary:hover {
       background-color: #059669;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .btn-tertiary {
       background-color: #ffffff;
@@ -63,7 +63,7 @@
     }
     .btn-tertiary:hover {
       background-color: #f0f5ff;
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
     .custom-checkbox {
       appearance: none;
@@ -81,89 +81,212 @@
       background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
       background-size: 100% 100%;
     }
-    .simulator-container {
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    .price-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s ease;
+    }
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .header-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
     }
   </style>
 </head>
-<body class="bg-gray-200 text-gray-800 min-h-screen flex flex-col">
-  <!-- Header -->
-  <header class="bg-gray-200 py-6 sm:py-8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center">
-      <a href="index.html" class="btn-tertiary px-6 py-3 rounded-lg font-semibold text-lg font-montserrat mb-4 sm:mb-0 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-        </svg>
-        Volver al inicio
-      </a>
-      <img src="ubify-logo-png.png" alt="Logo de Ubify" class="h-16 sm:h-20 drop-shadow-md" loading="lazy" />
+<body class="min-h-screen flex flex-col bg-gray-50">
+  <!-- Header mejorado -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row justify-between items-center py-4">
+        <div class="flex items-center justify-between w-full sm:w-auto">
+          <a href="index.html" class="btn-tertiary px-4 py-2 rounded-lg font-medium text-sm sm:text-base flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Volver al inicio
+          </a>
+        </div>
+        <div class="mt-4 sm:mt-0">
+          <img src="logo-blanco-nuevo.png" alt="Logo de Ubify" class="h-12 sm:h-16" loading="lazy" />
+        </div>
+      </div>
+      <div class="header-divider my-2"></div>
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Contenido principal reorganizado -->
   <main class="flex-grow">
-    <div class="max-w-2xl mx-auto px-4 py-8 sm:py-12">
-      <div class="bg-white simulator-container rounded-xl p-6 sm:p-10">
-        <div class="text-center mb-8">
-          <h1 class="text-2xl sm:text-4xl font-montserrat font-bold text-gray-800 mb-2">Simulador de Publicación</h1>
-          <p class="text-center text-base sm:text-lg text-gray-600">Estima el costo de publicar tu propiedad en Ubify</p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <!-- Sección de título -->
+      <div class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Simulador de Publicación</h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Calcula el costo estimado para publicar tu propiedad en Ubify</p>
+      </div>
+      
+      <!-- Grid de dos columnas (en pantallas grandes) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Panel de tarifas (izquierda) -->
+        <div class="space-y-6">
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Nuestras tarifas</h2>
+            <p class="text-gray-600 mb-6">El precio se calcula según la duración, tipo de propiedad y si querés destacar tu publicación.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="price-card bg-white p-4 rounded-lg border border-gray-100">
+                <div class="text-blue-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Duración</h3>
+                <ul class="space-y-1 text-sm text-gray-600">
+                  <li class="flex justify-between"><span>1 día</span><span class="font-medium">$500</span></li>
+                  <li class="flex justify-between"><span>1 semana</span><span class="font-medium">$2.000</span></li>
+                  <li class="flex justify-between"><span>1 mes</span><span class="font-medium">$5.000</span></li>
+                </ul>
+              </div>
+              
+              <div class="price-card bg-white p-4 rounded-lg border border-gray-100">
+                <div class="text-blue-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Tipo de propiedad</h3>
+                <ul class="space-y-1 text-sm text-gray-600">
+                  <li class="flex justify-between"><span>Terreno</span><span class="font-medium">$0</span></li>
+                  <li class="flex justify-between"><span>Departamento</span><span class="font-medium">$500</span></li>
+                  <li class="flex justify-between"><span>Casa</span><span class="font-medium">$1.000</span></li>
+                  <li class="flex justify-between"><span>Local</span><span class="font-medium">$1.500</span></li>
+                  <li class="flex justify-between"><span>Campo</span><span class="font-medium">$2.000</span></li>
+                </ul>
+              </div>
+              
+              <div class="price-card bg-white p-4 rounded-lg border border-gray-100">
+                <div class="text-blue-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Extras</h3>
+                <ul class="space-y-1 text-sm text-gray-600">
+                  <li class="flex justify-between"><span>Destacado</span><span class="font-medium">+$1.000</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">¿Cómo funciona?</h2>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 bg-blue-100 rounded-full p-2 mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-900">Completa el formulario</h3>
+                  <p class="mt-1 text-sm text-gray-600">Selecciona el tipo de propiedad, duración y si quieres destacarla.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 bg-blue-100 rounded-full p-2 mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-900">Obtén el precio estimado</h3>
+                  <p class="mt-1 text-sm text-gray-600">El sistema calculará automáticamente el costo total de tu publicación.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 bg-blue-100 rounded-full p-2 mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-900">Contacta con nosotros</h3>
+                  <p class="mt-1 text-sm text-gray-600">Usa el botón de WhatsApp para coordinar la publicación de tu propiedad.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
-        <form id="formulario" class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label for="operacion" class="block text-sm font-medium text-gray-700 mb-2">Operación:</label>
-              <select id="operacion" class="form-input w-full">
-                <option value="alquiler">Alquiler</option>
-                <option value="venta">Venta</option>
-              </select>
-            </div>
-            <div>
-              <label for="tipo" class="block text-sm font-medium text-gray-700 mb-2">Tipo de propiedad:</label>
-              <select id="tipo" class="form-input w-full">
-                <option value="terreno">Terreno</option>
-                <option value="departamento">Departamento</option>
-                <option value="casa">Casa</option>
-                <option value="local">Local comercial</option>
-                <option value="campo">Campo</option>
-              </select>
-            </div>
+        <!-- Simulador (derecha) -->
+        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-4">
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Calcula tu publicación</h2>
+            <p class="text-gray-600">Completa los datos para obtener un precio estimado</p>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label for="tamanio" class="block text-sm font-medium text-gray-700 mb-2">Tamaño en metros cuadrados (m²):</label>
-              <input type="number" id="tamanio" value="100" min="1" required class="form-input w-full">
+          <form id="formulario" class="space-y-5">
+            <div class="grid grid-cols-1 gap-5">
+              <div>
+                <label for="operacion" class="block text-sm font-medium text-gray-700 mb-1">Operación</label>
+                <select id="operacion" class="form-input w-full">
+                  <option value="alquiler">Alquiler</option>
+                  <option value="venta">Venta</option>
+                </select>
+              </div>
+              
+              <div>
+                <label for="tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo de propiedad</label>
+                <select id="tipo" class="form-input w-full">
+                  <option value="terreno">Terreno</option>
+                  <option value="departamento">Departamento</option>
+                  <option value="casa">Casa</option>
+                  <option value="local">Local comercial</option>
+                  <option value="campo">Campo</option>
+                </select>
+              </div>
+              
+              <div>
+                <label for="tamanio" class="block text-sm font-medium text-gray-700 mb-1">Tamaño (m²)</label>
+                <input type="number" id="tamanio" value="100" min="1" required class="form-input w-full">
+              </div>
+              
+              <div>
+                <label for="duracion" class="block text-sm font-medium text-gray-700 mb-1">Duración</label>
+                <select id="duracion" class="form-input w-full">
+                  <option value="1">1 día</option>
+                  <option value="7">1 semana</option>
+                  <option value="30">1 mes</option>
+                </select>
+              </div>
+              
+              <div class="flex items-center">
+                <input type="checkbox" id="destacado" class="custom-checkbox mr-3">
+                <label for="destacado" class="text-sm font-medium text-gray-700">Destacar publicación (+$1.000)</label>
+              </div>
             </div>
-            <div>
-              <label for="duracion" class="block text-sm font-medium text-gray-700 mb-2">Duración de la publicación:</label>
-              <select id="duracion" class="form-input w-full">
-                <option value="1">1 día</option>
-                <option value="7">1 semana</option>
-                <option value="30">1 mes</option>
-              </select>
+            
+            <div class="bg-blue-50 rounded-lg p-4 mt-6">
+              <div id="resultado" class="text-center">
+                <p class="text-sm text-gray-600 mb-1">Precio estimado</p>
+                <p class="text-2xl font-bold text-green-600">$0</p>
+              </div>
             </div>
-          </div>
-          
-          <div class="flex items-center justify-center md:justify-start">
-            <input type="checkbox" id="destacado" class="custom-checkbox mr-3">
-            <label for="destacado" class="text-sm font-medium text-gray-700">Publicación destacada (+ visibilidad)</label>
-          </div>
-          
-          <div class="bg-blue-50 rounded-lg p-4 mt-6">
-            <p id="resultado" class="text-center text-xl font-bold text-green-600"></p>
-          </div>
-          
-          <a id="botonWhatsapp" href="#" target="_blank" class="btn-secondary w-full flex items-center justify-center px-6 py-4 rounded-lg font-semibold text-lg font-montserrat transition duration-300">
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-6 h-6 mr-2 invert" />
-            Pedir publicación
-          </a>
-        </form>
+            
+            <button type="button" id="botonWhatsapp" class="btn-secondary w-full flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-base mt-6">
+              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5 mr-2 invert" />
+              Pedir publicación
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </main>
 
-  <!-- Footer -->
+   <!-- Footer -->
   <footer class="bg-gray-200 py-10 px-4">
     <div class="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3 text-center sm:text-left">
       <!-- Ubicasa -->
@@ -196,6 +319,7 @@
         </div>
       </div>
     </div>
+    
     <!-- Aviso legal -->
     <div class="max-w-4xl mx-auto mt-6 text-center text-gray-500 text-xs sm:text-sm font-inter">
       <p>Ubify es una plataforma digital para la publicación de propiedades en Villa Ángela, Chaco. No realiza intermediación inmobiliaria ni cobra comisiones por operaciones. Las negociaciones son responsabilidad exclusiva de las partes intervinientes.</p>
@@ -205,46 +329,55 @@
 
   <script>
     const precios = {
-      base: { 1: 500, 7: 2500, 30: 8000 },
-      destacado: { 1: 1000, 7: 5000, 30: 15000 },
-      operacion: { alquiler: 1, venta: 1.5 },
-      tipo: { terreno: 0.8, departamento: 1, casa: 1.2, local: 1.3, campo: 1.4 }
+      base: { 1: 500, 7: 2000, 30: 5000 },
+      tipoExtra: {
+        terreno: 0,
+        departamento: 500,
+        casa: 1000,
+        local: 1500,
+        campo: 2000
+      },
+      destacado: 1000
     };
 
     const calcular = () => {
       const duracion = +document.getElementById('duracion').value;
+      const tipo = document.getElementById('tipo').value;
+      const destacado = document.getElementById('destacado').checked;
+
       const base = precios.base[duracion];
-      const destacado = document.getElementById('destacado').checked ? precios.destacado[duracion] : 0;
-      const op = precios.operacion[document.getElementById('operacion').value];
-      const tipo = precios.tipo[document.getElementById('tipo').value];
-      const tamanio = +document.getElementById('tamanio').value;
+      const extraTipo = precios.tipoExtra[tipo];
+      const extraDestacado = destacado ? precios.destacado : 0;
+      const total = base + extraTipo + extraDestacado;
 
-      const m2Mult = tamanio <= 100 ? 1 : tamanio <= 300 ? 1.2 : 1.5;
+      // Mostrar resultado formateado
+      document.getElementById('resultado').innerHTML = `
+        <p class="text-sm text-gray-600 mb-1">Precio estimado</p>
+        <p class="text-2xl font-bold text-green-600">$${total.toLocaleString('es-AR')}</p>
+        <p class="text-xs text-gray-500 mt-1">Base: $${base.toLocaleString('es-AR')} + Tipo: $${extraTipo.toLocaleString('es-AR')} ${destacado ? '+ Destacado: $1.000' : ''}</p>
+      `;
 
-      const total = Math.round((base * op * tipo * m2Mult) + destacado);
+      // Generar mensaje de WhatsApp
+      const mensaje = `Hola! Quiero publicar una propiedad en Ubify con los siguientes datos:
+- Tipo: ${document.getElementById('tipo').options[document.getElementById('tipo').selectedIndex].text}
+- Tamaño: ${document.getElementById('tamanio').value}m²
+- Duración: ${document.getElementById('duracion').options[document.getElementById('duracion').selectedIndex].text}
+- Operación: ${document.getElementById('operacion').options[document.getElementById('operacion').selectedIndex].text}
+- ¿Destacada?: ${destacado ? 'Sí' : 'No'}
+- Precio estimado: $${total.toLocaleString('es-AR')}
 
-      const resultado = `Precio estimado: $${total.toLocaleString('es-AR')} ARS`;
-      document.getElementById('resultado').textContent = resultado;
+¿Me podrías indicar cómo seguir?`;
 
-      const mensaje = `Hola! Quiero publicar una propiedad con los siguientes datos:
-- Operación: ${document.getElementById('operacion').value}
-- Tipo de propiedad: ${document.getElementById('tipo').value}
-- Tamaño: ${tamanio} m²
-- Duración: ${duracion} día(s)
-- ¿Destacada?: ${document.getElementById('destacado').checked ? 'Sí' : 'No'}
-- Precio estimado: $${total.toLocaleString('es-AR')} ARS
-
-¿Me podés indicar cómo seguir?`;
-
-      const numero = '5491123456789'; // 🔁 Reemplazá con TU número con código de país sin +
+      const numero = '543644539325';
       const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-      document.getElementById('botonWhatsapp').href = link;
+      document.getElementById('botonWhatsapp').onclick = () => window.open(link, '_blank');
     };
 
-    // Activar al cargar y cada vez que se cambia algo
     document.querySelectorAll('select, input').forEach(el => el.addEventListener('change', calcular));
     document.getElementById('tamanio').addEventListener('input', calcular);
-    calcular();
+    
+    // Calcular al cargar
+    window.addEventListener('DOMContentLoaded', calcular);
   </script>
 </body>
 </html>
