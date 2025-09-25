@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración | Ubify</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-content">
+      <div class="logo-container">
+        <img src="logo-negro-sinfondo.png" alt="Logo" class="logo">
+        <div class="header-titles">
+          <h1 class="header-title">Ubify</h1>
+          <h2 class="header-subtitle">Panel de Administración</h2>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-web">
+          <i class="fas fa-external-link-alt"></i> Ir al sitio
+        </a>
+        <div class="user-menu">
+          <span class="user-name">Admin</span>
+          <i class="fas fa-user-circle user-icon"></i>
+        </div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <ul>
+        <li class="active"><a href="#"><i class="fas fa-home"></i> Propiedades</a></li>
+        <!--
+        <li><a href="#"><i class="fas fa-users"></i> Clientes</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> Reportes</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+        -->
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="properties-container">
+      <div class="properties-header">
+        <h2 class="properties-title">Propiedades existentes</h2>
+        <div class="properties-controls">
+          <div class="search-container">
+            <input type="text" id="search-input" placeholder="Buscar propiedades..." class="form-control">
+            <button class="btn btn-secondary" id="search-btn">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button class="btn btn-primary" id="add-property-btn">
+            <i class="fas fa-plus"></i> Agregar nueva
+          </button>
+        </div>
+      </div>
+      <div class="properties-filters">
+        <select id="filter-operation" class="form-control">
+          <option value="">Todas las operaciones</option>
+          <option value="Venta">Venta</option>
+          <option value="Alquiler">Alquiler</option>
+        </select>
+        <select id="filter-type" class="form-control">
+          <option value="">Todos los tipos</option>
+          <option value="Casa">Casa</option>
+          <option value="Departamento">Departamento</option>
+          <option value="Terreno">Terreno</option>
+          <option value="Local">Local</option>
+        </select>
+        <button class="btn btn-secondary" id="filter-featured">
+          <i class="fas fa-star"></i> Solo destacados
+        </button>
+        <button class="btn btn-secondary" id="clear-filters">
+          <i class="fas fa-times"></i> Limpiar filtros
+        </button>
+      </div>
+      <div class="properties-stats">
+        <span id="total-properties">0 propiedades</span>
+        <span id="featured-count">0 destacadas</span>
+      </div>
+      <div id="listaPropiedades" class="properties-list"></div>
+      <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando propiedades...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para agregar/editar propiedad -->
+  <div class="modal" id="add-property-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="close-modal-btn">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="form-container">
+      <h2 class="form-title" id="modal-title">Agregar propiedad</h2>
+      <form id="propForm">
+        <div class="form-grid">
+          <!-- Primera columna -->
+          <div>
+            <div class="form-group">
+              <label for="title">Título de la propiedad</label>
+              <input type="text" id="title" name="title" class="form-control" placeholder="Ej: Moderno departamento en Palermo" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="location">Ubicación</label>
+              <input type="text" id="location" name="location" class="form-control" placeholder="Ej: Palermo, Buenos Aires" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="type">Tipo de propiedad</label>
+              <select id="type" name="type" class="form-control" required>
+                <option value="">Seleccione un tipo</option>
+                <option value="Casa">Casa</option>
+                <option value="Departamento">Departamento</option>
+                <option value="PH">PH</option>
+                <option value="Oficina">Oficina</option>
+                <option value="Local">Local comercial</option>
+                <option value="Terreno">Terreno</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="operation">Operación</label>
+              <select id="operation" name="operation" class="form-control" required>
+                <option value="Venta">Venta</option>
+                <option value="Alquiler">Alquiler</option>
+                <option value="Alquiler temporal">Alquiler temporal</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="currency">Moneda</label>
+              <select id="currency" name="currency" class="form-control" required>
+                <option value="ARS">Pesos Argentinos (ARS)</option>
+                <option value="USD">Dólares Estadounidenses (USD)</option>
+                <option value="EUR">Euros (EUR)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="price">Precio</label>
+              <div class="input-group">
+                <span class="input-group-text" id="currency-symbol">$</span>
+                <input type="number" id="price" name="price" class="form-control" placeholder="Ej: 150000" required>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Segunda columna -->
+          <div>
+            <div class="form-group">
+              <label for="squareMeters">Metros cuadrados</label>
+              <div class="input-group">
+                <input type="number" id="squareMeters" name="squareMeters" class="form-control" placeholder="Ej: 85" required>
+                <span class="input-group-text">m²</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="bedrooms">Dormitorios</label>
+              <input type="number" id="bedrooms" name="bedrooms" class="form-control" placeholder="Ej: 2" required min="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="bathrooms">Baños</label>
+              <input type="number" id="bathrooms" name="bathrooms" class="form-control" placeholder="Ej: 1" required min="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="owner">Propietario/Contacto</label>
+              <input type="text" id="owner" name="owner" class="form-control" placeholder="Nombre del propietario" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Teléfono de contacto</label>
+              <input type="tel" id="phone" name="phone" class="form-control" placeholder="Ej: 11 1234-5678" required>
+            </div>
+            
+            <div class="form-checkbox-container">
+              <input type="checkbox" id="featured" name="featured" class="form-checkbox">
+              <label for="featured" class="form-checkbox-label">Destacar esta propiedad</label>
+            </div>
+          </div>
+          
+          <!-- Campos de ancho completo -->
+          <div class="form-group full-width">
+            <label for="amenities">Amenities y características</label>
+            <input type="text" id="amenities" name="amenities" class="form-control" placeholder="Ej: Piscina, Cocina equipada, Garage, Balcón...">
+            <small class="form-hint">Separe con comas las características principales</small>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="description">Descripción corta</label>
+            <textarea id="description" name="description" class="form-control form-textarea" placeholder="Breve descripción que aparecerá en los listados" required maxlength="200"></textarea>
+            <small class="form-hint"><span id="desc-counter">0</span>/200 caracteres</small>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="detailedDescription">Descripción detallada</label>
+            <textarea id="detailedDescription" name="detailedDescription" class="form-control form-textarea" placeholder="Descripción completa con todos los detalles de la propiedad" required></textarea>
+          </div>
+          
+          <div class="form-group full-width image-upload-container">
+            <label for="images">Imágenes de la propiedad</label>
+            <textarea id="images" name="images" class="form-control form-textarea" placeholder="Ingrese una URL por línea o sepárelas por comas"></textarea>
+            <small class="form-hint">Recomendamos al menos 3 imágenes de buena calidad</small>
+            <div class="image-preview" id="image-preview"></div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-btn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            <span id="submit-btn-text">
+              <i class="fas fa-save"></i> Guardar Propiedad
+            </span>
+            <span class="btn-loading" id="submit-loading">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  <!-- Modal de confirmación -->
+  <div class="modal" id="confirmation-modal">
+    <div class="modal-content small-modal">
+      <div class="modal-body">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h3 id="confirmation-message">Propiedad guardada con éxito</h3>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="confirm-ok-btn">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación de eliminación -->
+  <div class="modal" id="delete-modal">
+    <div class="modal-content small-modal">
+      <div class="modal-body">
+        <i class="fas fa-exclamation-circle warning-icon"></i>
+        <h3>¿Estás seguro de eliminar esta propiedad?</h3>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="delete-cancel-btn">Cancelar</button>
+        <button class="btn btn-danger" id="delete-confirm-btn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
