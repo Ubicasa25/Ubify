@@ -28,32 +28,63 @@
       background: linear-gradient(145deg, #ffffff, #f8fafc);
       border: 1px solid #e2e8f0;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      transition: all 0.3s ease;
-      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 1.25rem;
       overflow: hidden;
       height: 100%;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+    .property-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
     }
     .property-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .property-card:hover::before {
+      opacity: 1;
     }
     .property-card .card-image {
-      height: 200px;
+      height: 220px;
       overflow: hidden;
+      position: relative;
+    }
+    .property-card .card-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
     }
     .property-card .card-content {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 1.25rem;
+      padding: 1.5rem;
     }
     .property-card .card-content .card-body {
       flex: 1;
     }
     .property-card .card-content .card-footer {
       margin-top: auto;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f1f5f9;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      margin: 1.25rem -1.5rem -1.5rem -1.5rem;
+      padding: 1.25rem 1.5rem 1.5rem 1.5rem;
     }
     .favorite-btn {
       background-color: white;
@@ -118,18 +149,38 @@
       to { opacity: 1; }
     }
     .animate-slide-up {
-      animation: slideUp 0.3s ease-in-out;
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .animate-slide-down {
-      animation: slideDown 0.3s ease-in-out;
+      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      from { 
+        transform: translateY(100%); 
+        opacity: 0; 
+      }
+      to { 
+        transform: translateY(0); 
+        opacity: 1; 
+      }
     }
     @keyframes slideDown {
-      from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(20px); opacity: 0; }
+      from { 
+        transform: translateY(0); 
+        opacity: 1; 
+      }
+      to { 
+        transform: translateY(100%); 
+        opacity: 0; 
+      }
+    }
+    
+    /* Mejoras para móviles */
+    @media (max-width: 640px) {
+      .toast-notification {
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      }
     }
     .line-clamp-2 {
       display: -webkit-box;
@@ -140,90 +191,186 @@
     }
     .empty-state {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 2rem 1rem;
       color: #6b7280;
     }
     .empty-state svg {
       margin: 0 auto 1rem;
       color: #d1d5db;
     }
+    
+    /* Mejoras para móviles */
+    @media (max-width: 640px) {
+      .property-card {
+        margin-bottom: 0;
+      }
+      .property-card .card-image {
+        height: 180px;
+      }
+      .property-card .card-content {
+        padding: 1rem;
+      }
+      .favorite-btn {
+        width: 2rem;
+        height: 2rem;
+      }
+      .favorite-btn svg {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-inter">
   <!-- Header -->
-  <header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <div class="flex items-center justify-between">
+  <header class="bg-gradient-to-r from-white via-blue-50 to-purple-50 shadow-lg border-b border-gray-200 relative overflow-hidden">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5"></div>
+    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full -translate-y-16 translate-x-16"></div>
+    <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/10 to-blue-400/10 rounded-full translate-y-12 -translate-x-12"></div>
+    
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10">
+      <!-- Mobile Layout -->
+      <div class="block sm:hidden">
+        <div class="flex items-center justify-between mb-4">
+          <a href="index.html" class="flex items-center bg-white/80 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Volver
+          </a>
+          <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-xl shadow-lg">
+              <span id="favoritesCountMobile" class="font-bold text-sm">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="inline-flex items-center bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg border border-white/50">
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-lg font-montserrat font-bold text-gray-800">Mis Favoritos</h1>
+              <p class="text-xs text-gray-500">Tu colección personal</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Layout -->
+      <div class="hidden sm:flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <a href="index.html" class="btn-tertiary px-4 py-2 rounded-full font-semibold text-sm font-montserrat flex items-center">
+          <a href="index.html" class="bg-white/80 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-xl font-semibold text-sm font-montserrat flex items-center transition-all duration-300 shadow-sm hover:shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
             </svg>
             Volver al inicio
           </a>
-          <div class="flex items-center">
-            <img src="logo-negro-sinfondo.png" alt="Ubify" class="h-8 w-auto mr-3" />
-            <h1 class="text-xl font-montserrat font-bold text-gray-800">Mis Favoritos</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center bg-white/90 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg border border-white/50">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-montserrat font-bold text-gray-800">Mis Favoritos</h1>
+              <p class="text-sm text-gray-500">Tu colección personal</p>
+            </div>
           </div>
         </div>
         <div class="flex items-center space-x-4">
-          <span id="favoritesCount" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">0 propiedades</span>
-          <button id="clearAllFavorites" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">
-            Limpiar todo
-          </button>
+          <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl shadow-lg">
+            <span id="favoritesCount" class="font-bold text-sm">0 propiedades</span>
+          </div>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="py-8 px-4">
+  <main class="py-4 sm:py-8 px-3 sm:px-4 min-h-[60vh] flex flex-col">
     <div class="max-w-7xl mx-auto">
       <!-- Loading State -->
-      <div id="loadingState" class="text-center py-12">
-        <div class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
-          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Cargando tus favoritos...
+      <div id="loadingState" class="text-center py-16">
+        <div class="inline-flex flex-col items-center space-y-4">
+          <div class="relative">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="text-center">
+            <h3 class="text-lg font-montserrat font-semibold text-gray-800 mb-2">Cargando tus favoritos</h3>
+            <p class="text-gray-500 text-sm">Un momento, estamos preparando tu lista...</p>
+          </div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="empty-state hidden">
-        <svg class="h-24 w-24 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-        <h2 class="text-2xl font-montserrat font-semibold text-gray-900 mb-2">No guardaste en favoritos ninguna propiedad.</h2>
-        <p class="text-gray-500 mb-6">Explora las propiedades y marca las que te gusten con el corazón</p>
-        <a href="index.html" class="btn-primary px-6 py-3 rounded-full font-semibold text-base font-montserrat inline-flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          Explorar propiedades
-        </a>
+      <div id="emptyState" class="empty-state hidden flex-1 flex flex-col items-center justify-center text-center py-16">
+        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 sm:p-12 max-w-md mx-auto shadow-lg border border-blue-100">
+          <div class="relative mb-6">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+              <svg class="h-10 w-10 sm:h-12 sm:w-12 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+              <svg class="w-3 h-3 text-yellow-800" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-montserrat font-bold text-gray-800 mb-3">¡Tu lista de favoritos está vacía!</h2>
+          <p class="text-gray-600 mb-8 text-sm sm:text-base leading-relaxed">Explora nuestras propiedades y marca con el corazón las que más te gusten. Así podrás encontrarlas fácilmente después.</p>
+          <div class="space-y-3">
+            <a href="index.html" class="btn-primary px-6 py-3 rounded-xl font-semibold text-base font-montserrat inline-flex items-center justify-center w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Explorar propiedades
+            </a>
+            <p class="text-xs text-gray-500">💡 Tip: Haz clic en el corazón de las propiedades que te gusten</p>
+          </div>
+        </div>
       </div>
 
       <!-- Favorites Grid -->
-      <div id="favoritesGrid" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 hidden">
+      <div id="favoritesGrid" class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 hidden flex-1">
         <!-- Las propiedades se insertarán aquí -->
       </div>
 
       <!-- Actions Bar -->
-      <div id="actionsBar" class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div class="text-sm text-gray-600">
-            <span id="totalFavorites">0</span> propiedades guardadas
+      <div id="actionsBar" class="mt-8 bg-gradient-to-r from-white to-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div class="text-center sm:text-left">
+            <div class="flex items-center justify-center sm:justify-start mb-2">
+              <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-montserrat font-semibold text-gray-800">Tu colección de favoritos</h3>
+            </div>
+            <p class="text-sm text-gray-600">
+              <span id="totalFavorites" class="font-semibold text-blue-600">0</span> propiedades guardadas
+            </p>
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
-            <button id="shareFavorites" class="btn-tertiary px-4 py-2 rounded-lg font-medium text-sm flex items-center justify-center">
+            <button id="shareFavorites" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 px-6 py-3 rounded-xl font-semibold text-sm flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
               </svg>
               Compartir lista
             </button>
-            <button id="clearAllFavoritesBottom" class="bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg font-medium text-sm flex items-center justify-center transition-colors">
+            <button id="clearAllFavoritesBottom" class="bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 px-6 py-3 rounded-xl font-semibold text-sm flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hidden">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
@@ -236,7 +383,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-100 py-8 px-4 border-t border-gray-200 mt-16">
+  <footer id="mainFooter" class="bg-gray-100 py-8 px-4 border-t border-gray-200 mt-16 hidden">
     <div class="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3 text-center sm:text-left">
       <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-6 sm:pb-0 sm:pr-6">
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Ubify</h3>
@@ -304,9 +451,33 @@
     }
 
     function updateFavoritesCount() {
+      // Recargar favoritos desde localStorage para obtener los datos más actuales
+      favoriteProperties = loadFavorites();
       const count = favoriteProperties.length;
-      document.getElementById('favoritesCount').textContent = `${count} ${count === 1 ? 'propiedad' : 'propiedades'}`;
-      document.getElementById('totalFavorites').textContent = count;
+      
+      // Actualizar contador en el header (desktop)
+      const favoritesCountElement = document.getElementById('favoritesCount');
+      if (favoritesCountElement) {
+        favoritesCountElement.textContent = `${count} ${count === 1 ? 'propiedad' : 'propiedades'}`;
+      }
+      
+      // Actualizar contador en el header (móvil)
+      const favoritesCountMobileElement = document.getElementById('favoritesCountMobile');
+      if (favoritesCountMobileElement) {
+        favoritesCountMobileElement.textContent = count.toString();
+      }
+      
+      // Actualizar contador en la barra de acciones
+      const totalFavoritesElement = document.getElementById('totalFavorites');
+      if (totalFavoritesElement) {
+        totalFavoritesElement.textContent = count;
+      }
+      
+      console.log('Favoritos actualizados:', favoriteProperties);
+      console.log('Contador:', count);
+      
+      // Mostrar/ocultar botones de limpiar según si hay favoritos
+      updateClearButtonsVisibility();
     }
 
     function showEmptyState() {
@@ -321,6 +492,28 @@
       document.getElementById('emptyState').classList.add('hidden');
       document.getElementById('favoritesGrid').classList.remove('hidden');
       document.getElementById('actionsBar').classList.remove('hidden');
+    }
+
+    function updateClearButtonsVisibility() {
+      const hasFavorites = favoriteProperties.length > 0;
+      console.log('Actualizando visibilidad de botones. Tiene favoritos:', hasFavorites, 'Cantidad:', favoriteProperties.length);
+      
+      // Mostrar/ocultar botón de limpiar en la barra de acciones
+      const clearBottomButton = document.getElementById('clearAllFavoritesBottom');
+      if (clearBottomButton) {
+        console.log('Botón de limpiar inferior encontrado');
+        if (hasFavorites) {
+          clearBottomButton.classList.remove('hidden');
+          clearBottomButton.disabled = false;
+          console.log('Botón inferior mostrado');
+        } else {
+          clearBottomButton.classList.add('hidden');
+          clearBottomButton.disabled = true;
+          console.log('Botón inferior ocultado');
+        }
+      } else {
+        console.log('Botón de limpiar inferior NO encontrado');
+      }
     }
 
     function renderFavorites() {
@@ -416,11 +609,21 @@
     }
 
     function clearAllFavorites() {
+      console.log('Intentando limpiar favoritos. Favoritos actuales:', favoriteProperties);
+      
+      if (favoriteProperties.length === 0) {
+        console.log('No hay favoritos para limpiar');
+        showToast('No hay favoritos para limpiar', 'info');
+        return;
+      }
+      
+      console.log('Limpiando favoritos...');
       favoriteProperties = [];
       saveFavorites(favoriteProperties);
       updateFavoritesCount();
       renderFavorites();
       showToast('Todos los favoritos han sido eliminados', 'info');
+      console.log('Favoritos limpiados exitosamente');
     }
 
     async function loadProperties() {
@@ -434,14 +637,25 @@
         favoriteProperties = loadFavorites();
         updateFavoritesCount();
         renderFavorites();
+        
+        // Mostrar el footer después de cargar los favoritos
+        const mainFooter = document.getElementById('mainFooter');
+        if (mainFooter) {
+          mainFooter.classList.remove('hidden');
+        }
       } catch (error) {
         console.error("Error al cargar propiedades:", error);
         showToast('Error al cargar las propiedades', 'error');
+        
+        // Mostrar el footer incluso si hay error
+        const mainFooter = document.getElementById('mainFooter');
+        if (mainFooter) {
+          mainFooter.classList.remove('hidden');
+        }
       }
     }
 
     // Event listeners
-    document.getElementById('clearAllFavorites')?.addEventListener('click', clearAllFavorites);
     document.getElementById('clearAllFavoritesBottom')?.addEventListener('click', clearAllFavorites);
     
     document.getElementById('shareFavorites')?.addEventListener('click', () => {
@@ -460,6 +674,20 @@
     // Cargar datos al iniciar
     document.addEventListener('DOMContentLoaded', () => {
       loadProperties();
+    });
+
+    // Escuchar cambios en localStorage desde otras pestañas
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'favoriteProperties') {
+        updateFavoritesCount();
+        renderFavorites();
+      }
+    });
+
+    // Escuchar eventos personalizados de favoritos
+    window.addEventListener('favoritesUpdated', () => {
+      updateFavoritesCount();
+      renderFavorites();
     });
   </script>
 </body>
