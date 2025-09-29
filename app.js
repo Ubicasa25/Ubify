@@ -194,14 +194,22 @@ export function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   const bgColor = type === 'success' ? 'bg-green-500' : type === 'warning' ? 'bg-yellow-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
   
-  toast.className = `fixed bottom-4 left-1/2 transform -translate-x-1/2 ${bgColor} text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-slide-up toast-notification max-w-sm mx-4`;
+  // Clases mejoradas para móviles
+  toast.className = `fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 ${bgColor} text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl shadow-2xl z-50 animate-slide-up toast-notification max-w-sm sm:max-w-md mx-auto`;
   
   // Agregar icono según el tipo
   const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠' : type === 'error' ? '✕' : 'ℹ';
   toast.innerHTML = `
-    <div class="flex items-center">
-      <span class="text-lg mr-2">${icon}</span>
-      <span class="font-medium">${message}</span>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center flex-1">
+        <span class="text-lg mr-3 flex-shrink-0">${icon}</span>
+        <span class="font-medium text-sm sm:text-base leading-tight">${message}</span>
+      </div>
+      <button class="ml-3 text-white/80 hover:text-white transition-colors flex-shrink-0" onclick="this.parentElement.parentElement.remove()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
   `;
   
@@ -213,10 +221,12 @@ export function showToast(message, type = 'info') {
     setTimeout(() => toast.remove(), 300);
   }, 4000);
   
-  // Permitir cerrar haciendo clic
-  toast.addEventListener('click', () => {
-    toast.classList.add('animate-slide-down');
-    setTimeout(() => toast.remove(), 300);
+  // Permitir cerrar haciendo clic en el toast
+  toast.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
+      toast.classList.add('animate-slide-down');
+      setTimeout(() => toast.remove(), 300);
+    }
   });
 }
 
@@ -328,6 +338,12 @@ async function loadPropertiesFromFirestore() {
     if (featuredSection) featuredSection.classList.remove('hidden');
     if (allPropertiesSection) allPropertiesSection.classList.remove('hidden');
     
+    // Mostrar el footer después de cargar las propiedades
+    const mainFooter = document.getElementById('mainFooter');
+    if (mainFooter) {
+      mainFooter.classList.remove('hidden');
+    }
+    
     updateFavoritesCounter();
     filterProperties();
     
@@ -345,6 +361,12 @@ async function loadPropertiesFromFirestore() {
     const allPropertiesSection = document.getElementById('allPropertiesSection');
     if (featuredSection) featuredSection.classList.remove('hidden');
     if (allPropertiesSection) allPropertiesSection.classList.remove('hidden');
+    
+    // Mostrar el footer incluso si hay error
+    const mainFooter = document.getElementById('mainFooter');
+    if (mainFooter) {
+      mainFooter.classList.remove('hidden');
+    }
     
     showToast('Error al cargar las propiedades. Intenta recargar la página.', 'error');
   }
