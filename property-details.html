@@ -265,23 +265,83 @@
     }
     .error-message {
       text-align: center;
-      padding: 2rem;
-      color: #ef4444;
-      font-size: 1.2rem;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, #fef2f2 0%, #fce7f3 100%);
+      border-radius: 1rem;
+      margin: 2rem 1rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #fecaca;
     }
+    
+    .error-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, #f87171 0%, #ec4899 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .error-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .error-description {
+      font-size: 1rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .error-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .error-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.4);
+    }
+    
+    .error-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.6);
+    }
+    
+    @media (min-width: 640px) {
+      .error-actions {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+    
   </style>
 </head>
-<body class="bg-gray-200 text-gray-800 font-inter">
-  <header class="bg-white shadow-lg sticky top-0 z-50">
+<body class="bg-gray-100 text-gray-800 font-inter">
+  <header class="bg-gradient-to-r from-white via-gray-50 to-blue-50 shadow-lg relative z-50">
     <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
       <!-- Mobile Layout -->
       <div class="block sm:hidden">
         <div class="flex items-center justify-between py-3">
-          <a href="index.html" class="flex items-center text-gray-600 hover:text-gray-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <a href="index.html" class="flex items-center bg-white/80 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
             </svg>
-            <span class="font-medium text-sm">Volver</span>
+            Volver al inicio
           </a>
           <div class="flex items-center space-x-3">
             <button id="favoriteButtonMobile" class="favorite-btn relative group" data-property-id="" aria-label="Añadir a favoritos">
@@ -313,11 +373,11 @@
       <!-- Desktop Layout -->
       <div class="hidden sm:block">
         <div class="flex items-center justify-between py-4">
-          <a href="index.html" class="btn-tertiary px-4 py-2 rounded-full font-semibold text-sm font-montserrat flex items-center hover:bg-blue-50 transition-all duration-200">
+          <a href="index.html" class="bg-white/80 backdrop-blur-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-xl font-semibold text-sm font-montserrat flex items-center transition-all duration-300 shadow-sm hover:shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
             </svg>
-            Volver
+            Volver al inicio
           </a>
           
           <div class="flex-1 flex flex-col items-center text-center px-6">
@@ -349,7 +409,7 @@
       </div>
     </div>
   </header>
-  <main id="mainContent" class="py-6 sm:py-12 px-3 sm:px-4 bg-gray-200">
+  <main id="mainContent" class="py-6 sm:py-12 px-3 sm:px-4 bg-gray-100">
     <div class="max-w-6xl mx-auto">
       <div id="loadingMessage" class="loading-message">
         <div class="text-center py-16">
@@ -514,7 +574,7 @@
       </div>
     </div>
   </main>
-  <footer id="mainFooter" class="bg-gray-200 py-8 sm:py-10 px-3 sm:px-4 hidden">
+  <footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 hidden">
     <div class="max-w-6xl mx-auto grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-3 text-center sm:text-left">
       <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Ubify</h3>
@@ -580,11 +640,31 @@
       const loadingMessage = document.getElementById('loadingMessage');
       const propertyDetails = document.getElementById('propertyDetails');
       const errorMessage = document.getElementById('errorMessage');
+      const mainFooter = document.getElementById('mainFooter');
+      
       if (loadingMessage && propertyDetails && errorMessage) {
         loadingMessage.classList.add('hidden');
         propertyDetails.classList.add('hidden');
         errorMessage.classList.remove('hidden');
-        errorMessage.innerHTML = `${message} <br><a href="index.html" class="text-blue-600 underline">Volver al inicio</a>`;
+        
+        // Ocultar el footer cuando hay error
+        if (mainFooter) {
+          mainFooter.classList.add('hidden');
+        }
+        
+        errorMessage.innerHTML = `
+          <div class="error-icon">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <div class="error-title">¡Oops! Algo salió mal</div>
+          <div class="error-description">${message}</div>
+          <div class="error-actions">
+            <a href="index.html" class="error-btn">Volver al inicio</a>
+            <button onclick="window.location.reload()" class="error-btn" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); box-shadow: 0 4px 14px 0 rgba(107, 114, 128, 0.4);">Intentar de nuevo</button>
+          </div>
+        `;
       }
     }
 
@@ -595,7 +675,7 @@
       console.log("Slug recibido:", slug);
 
       if (!slug) {
-        showError("Propiedad no encontrada. Slug no proporcionado.");
+        showError("Propiedad no encontrada. Por favor, verifica el enlace o regresa al inicio.");
         return;
       }
 
@@ -650,8 +730,8 @@
 
           const operationBadge = document.getElementById('modalOperationBadge');
           const operationBadgeMobile = document.getElementById('modalOperationBadgeMobile');
-          if (operationBadge) operationBadge.textContent = property.operation === 'comprar' ? 'Venta' : 'Alquiler';
-          if (operationBadgeMobile) operationBadgeMobile.textContent = property.operation === 'comprar' ? 'Venta' : 'Alquiler';
+          if (operationBadge) operationBadge.textContent = property.operation || 'Sin operación';
+          if (operationBadgeMobile) operationBadgeMobile.textContent = property.operation || 'Sin operación';
 
           const locationBadge = document.getElementById('modalLocationBadge');
           const locationBadgeMobile = document.getElementById('modalLocationBadgeMobile');
@@ -773,7 +853,7 @@
             mainFooter.classList.remove('hidden');
           }
         } else {
-          showError("Propiedad no encontrada con slug: " + slug + ". Verifica que el slug exista en la colección 'propiedades' de Firestore.");
+          showError("Propiedad no encontrada. La propiedad que buscas no existe o ha sido eliminada.");
           console.log("Verifica que el slug '" + slug + "' exista en la colección 'propiedades' de Firestore.");
           
           // Mostrar el footer incluso si hay error
