@@ -405,18 +405,37 @@ function renderProperties(filteredProperties, containerId) {
           <p class="text-xl font-bold text-gray-900 mb-3">${getCurrencySymbol(property.currency)}${property.price ? property.price.toLocaleString() : 'Consultar'}</p>
           <p class="text-gray-500 text-sm line-clamp-2 mb-4">${property.description || 'Sin descripción disponible'}</p>
           <div class="flex gap-3 text-sm text-gray-600 mb-4">
-            ${property.bedrooms ? `<span class="flex items-center bg-gray-50 px-2 py-1 rounded-md"><svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>${property.bedrooms}</span>` : ''}
-            ${property.bathrooms ? `<span class="flex items-center bg-gray-50 px-2 py-1 rounded-md"><svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-6a1 1 0 011-1h10a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>${property.bathrooms}</span>` : ''}
-            ${property.squareMeters ? `<span class="flex items-center bg-gray-50 px-2 py-1 rounded-md"><svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 1v10h10V5H5z" clip-rule="evenodd"></path></svg>${property.squareMeters}m²</span>` : ''}
+            ${property.bedrooms ? `<span class="flex items-center bg-blue-50 px-3 py-2 rounded-lg border border-blue-200"><i class="fas fa-bed text-blue-600 mr-2"></i><span class="font-medium text-blue-800">${property.bedrooms}</span></span>` : ''}
+            ${property.bathrooms ? `<span class="flex items-center bg-green-50 px-3 py-2 rounded-lg border border-green-200"><i class="fas fa-bath text-green-600 mr-2"></i><span class="font-medium text-green-800">${property.bathrooms}</span></span>` : ''}
+            ${property.squareMeters ? `<span class="flex items-center bg-purple-50 px-3 py-2 rounded-lg border border-purple-200"><i class="fas fa-ruler-combined text-purple-600 mr-2"></i><span class="font-medium text-purple-800">${property.squareMeters}m²</span></span>` : ''}
           </div>
         </div>
         <div class="card-footer">
-          <a href="property-details.html?slug=${property.slug}" class="w-full bg-gradient-to-r from-blue-600 to-purple-700 text-white py-3 rounded-lg font-semibold text-sm hover:from-blue-700 hover:to-purple-800 transition duration-300 block text-center shadow-md hover:shadow-lg">Ver detalles</a>
+          <div class="text-center py-2">
+            <p class="text-gray-400 text-xs">
+              <i class="fas fa-hand-pointer mr-1"></i>
+              Haz click para ver detalles
+            </p>
+          </div>
         </div>
       </div>`;
     container.appendChild(card);
+    
+    // Hacer que toda la tarjeta sea clickeable
+    card.addEventListener('click', (e) => {
+      // Evitar que se active cuando se hace click en el botón de favoritos
+      if (e.target.closest('.favorite-btn')) {
+        return;
+      }
+      // Navegar a los detalles de la propiedad
+      window.location.href = `property-details.html?slug=${property.slug}`;
+    });
+    
     const favoriteBtn = card.querySelector('.favorite-btn');
-    favoriteBtn.addEventListener('click', (e) => toggleFavoriteProperty(property.id, e));
+    favoriteBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Evitar que se active el click de la tarjeta
+      toggleFavoriteProperty(property.id, e);
+    });
   });
 }
 
