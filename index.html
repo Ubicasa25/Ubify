@@ -380,136 +380,85 @@
   <div class="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/60" aria-hidden="true"></div>
   
   <!-- Contenido principal -->
-  <div class="relative z-10 px-4 sm:px-6 w-full max-w-7xl py-2 sm:py-12">
+  <div class="relative z-10 px-4 sm:px-6 w-full max-w-7xl py-4 sm:py-12">
     
     <!-- Logo y título principal -->
-    <div class="text-center mb-2 sm:mb-8">
-      <div class="inline-block mb-1 sm:mb-4 transform transition-all duration-700 hover:scale-105">
+    <div class="text-center mb-4 sm:mb-8">
+      <div class="inline-block mb-2 sm:mb-4 transform transition-all duration-700 hover:scale-105">
         <img 
           src="logo-negro-sinfondo.png" 
           alt="Logo de Ubify" 
-          class="h-8 sm:h-24 md:h-28 lg:h-32 drop-shadow-2xl"
+          class="h-12 sm:h-24 md:h-28 lg:h-32 drop-shadow-2xl"
           loading="eager" 
         />
       </div>
       
-      <h1 class="text-lg sm:text-4xl md:text-5xl lg:text-6xl font-poppins font-semibold text-white mb-1 sm:mb-4 tracking-tight leading-tight">
+      <h1 class="text-xl sm:text-4xl md:text-5xl lg:text-6xl font-poppins font-semibold text-white mb-2 sm:mb-4 tracking-tight leading-tight">
         Conectamos personas con espacios
       </h1>
-      <p class="text-xs sm:text-xl text-white/90 max-w-2xl mx-auto font-inter font-light">
+      <p class="text-sm sm:text-xl text-white/90 max-w-2xl mx-auto font-inter font-light">
         Propiedades en toda la zona. 
       </p>
     </div>
 
     <!-- Buscador moderno -->
-    <div class="max-w-4xl mx-auto">
-      <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-3 sm:p-8 border border-white/20">
+    <div class="mt-6 sm:mt-8 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 sm:p-8 border border-white/20 w-full max-w-5xl mx-auto">
+      <form class="grid grid-cols-1 gap-4 sm:gap-4 sm:grid-cols-2 md:grid-cols-4" role="search" aria-label="Buscador de propiedades">
         
-        <!-- Título del buscador -->
-        <div class="text-center mb-3 sm:mb-8">
-          <h2 class="text-base sm:text-3xl font-poppins font-semibold text-gray-800 mb-1 sm:mb-2">¿Qué estás buscando?</h2>
-          <p class="text-gray-600 font-inter text-xs sm:text-sm">Filtra por ubicación, tipo, precio y más características</p>
-        </div>
-        
-        <form class="space-y-2 sm:space-y-6" role="search" aria-label="Buscador de propiedades">
-          <!-- Búsqueda principal -->
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
             <input 
               id="searchInput" 
               name="buscar" 
               type="text" 
-              placeholder="Buscar por ubicación, características, propietario..." 
-              class="w-full pl-12 pr-4 py-2 sm:py-4 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white text-gray-800 shadow-sm hover:shadow-md modern-input"
+          placeholder="Buscar propiedades" 
+          class="border-2 border-gray-200 bg-white text-gray-800 p-4 sm:p-4 rounded-xl w-full focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base sm:text-base font-inter shadow-sm hover:shadow-md h-12 sm:h-auto" 
               aria-label="Buscar propiedad"
             />
-          </div>
-          
-          <!-- Filtros en grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                </svg>
-              </div>
+        
               <select 
                 id="operationFilter" 
                 name="operación" 
-                class="w-full pl-12 pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white appearance-none cursor-pointer text-gray-800 shadow-sm hover:shadow-md modern-select text-sm"
+          class="border-2 border-gray-200 bg-white text-gray-800 p-4 sm:p-4 rounded-xl w-full focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base sm:text-base font-inter shadow-sm hover:shadow-md appearance-none cursor-pointer h-12 sm:h-auto"
                 aria-label="Tipo de operación"
               >
-                <option value="">¿Qué necesitas?</option>
-                <option value="Alquiler">Alquiler</option>
-                <option value="Venta">Venta</option>        
+          <option value="">¿Qué estás buscando?</option>
+          <option value="Alquiler">Quiero alquilar</option>
+          <option value="Venta">Quiero comprar</option>        
               </select>
-            </div>
-            
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
+
               <select 
                 id="typeFilter" 
                 name="tipo" 
-                class="w-full pl-12 pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white appearance-none cursor-pointer text-gray-800 shadow-sm hover:shadow-md modern-select text-sm"
+          class="border-2 border-gray-200 bg-white text-gray-800 p-4 sm:p-4 rounded-xl w-full focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base sm:text-base font-inter shadow-sm hover:shadow-md appearance-none cursor-pointer h-12 sm:h-auto"
                 aria-label="Tipo de propiedad"
               >
-                <option value="">Tipo</option>
+          <option value="">Tipo de propiedad</option>
                 <option value="Casa">Casa</option>
                 <option value="Departamento">Departamento</option>
-                <option value="PH">PH</option>
+          <option value="Terreno">Terreno</option>
+          <option value="Local comercial">Local</option>
                 <option value="Oficina">Oficina</option>
-                <option value="Local comercial">Local comercial</option>
-                <option value="Terreno">Terreno</option>
+          <option value="PH">Campo</option>
               </select>
-            </div>
-            
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-              </div>
+
               <select 
                 id="sortPrice" 
                 name="ordenar" 
-                class="w-full pl-12 pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white appearance-none cursor-pointer text-gray-800 shadow-sm hover:shadow-md modern-select text-sm"
+          class="border-2 border-gray-200 bg-white text-gray-800 p-4 sm:p-4 rounded-xl w-full focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base sm:text-base font-inter shadow-sm hover:shadow-md appearance-none cursor-pointer h-12 sm:h-auto"
                 aria-label="Ordenar por precio"
               >
-                <option value="">Precio</option>
-                <option value="asc">Menor a mayor</option>
-                <option value="desc">Mayor a menor</option>
+          <option value="">Ordenar resultados</option>
+          <option value="asc">De menor a mayor precio</option>
+          <option value="desc">De mayor a menor precio</option>
               </select>
-            </div>
-            
-            <button 
-              id="clearFiltersButton" 
-              type="button"
-              class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 sm:py-3 px-3 sm:px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center group border-2 border-gray-200 hover:border-gray-300 modern-select text-sm"
-              aria-label="Limpiar filtros"
-            >
-              <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              Limpiar
-            </button>
-          </div>
+
         </form>
-      </div>
     </div>
 
     <!-- Botones de acción -->
-    <div class="mt-3 sm:mt-10 flex flex-col sm:flex-row justify-center gap-2 sm:gap-6">
+    <div class="mt-6 sm:mt-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
       <a 
         href="#featuredSection" 
-        class="group bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-xl font-semibold text-sm sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-white/30"
+        class="group bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-white/30"
         aria-label="Explorar propiedades destacadas"
       >
         <span class="flex items-center justify-center">
@@ -522,7 +471,7 @@
       
       <a 
         href="favorites.html" 
-        class="group bg-gradient-to-r from-purple-500/80 to-pink-500/80 hover:from-purple-500 hover:to-pink-500 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-xl font-semibold text-sm sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 backdrop-blur-sm"
+        class="group bg-gradient-to-r from-purple-500/80 to-pink-500/80 hover:from-purple-500 hover:to-pink-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 backdrop-blur-sm"
         aria-label="Ver mis favoritos"
       >
         <span class="flex items-center justify-center">
@@ -655,33 +604,47 @@
   </div>
 </main>
 
-<footer id="mainFooter" class="bg-gray-100 py-8 px-4 border-t border-gray-200 hidden">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3 text-center sm:text-left">
-    <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-6 sm:pb-0 sm:pr-6">
-      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Ubify</h3>
+<footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 border-t border-gray-200 hidden">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-3 text-center sm:text-left">
+    <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Ubify</h3>
       <p class="text-gray-600 text-sm sm:text-base font-inter">Propiedades en toda la zona. Encontrá tu espacio o publicá el tuyo.</p>
     </div>
-    <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-6 sm:pb-0 sm:pr-6">
-      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">Contáctanos</h3>
-      <p class="text-gray-600 text-sm sm:text-base font-inter mb-2">¿Querés publicar una propiedad?</p>
-      <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20publicar%20una%20propiedad%20en%20Ubify" target="_blank" class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base hover:bg-green-600 transition duration-300 font-inter">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5 mr-2 invert" />
+    <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Contáctanos</h3>
+      <p class="text-gray-600 text-sm sm:text-base font-inter mb-3">¿Querés publicar una propiedad?</p>
+      <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20publicar%20una%20propiedad%20en%20Ubify" target="_blank" class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base hover:bg-green-600 transition duration-300 font-inter w-full sm:w-auto">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-4 h-4 sm:w-5 sm:h-5 mr-2 invert" />
         Quiero publicar
       </a>
     </div>
     <div>
-      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-4 text-gray-800">¡Seguinos!</h3>
+      <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">¡Seguinos!</h3>
       <div class="flex justify-center sm:justify-start space-x-6">
+        <a href="https://www.facebook.com/" target="_blank" class="hover:scale-110 transition-transform">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/facebook.svg" alt="Facebook" class="w-5 h-5 sm:w-6 sm:h-6 text-[#1877F2]" />
+        </a>
         <a href="https://www.instagram.com/" target="_blank" class="hover:scale-110 transition-transform">
-          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram" class="w-6 h-6 text-[#E4405F]" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram" class="w-5 h-5 sm:w-6 sm:h-6 text-[#E4405F]" />
+        </a>
+        <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20más%20información%20sobre%20Ubify" target="_blank" class="hover:scale-110 transition-transform">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5 sm:w-6 sm:h-6 text-[#25D366]" />
+        </a>
+      </div>
+      <div class="mt-4 text-center sm:text-left">
+        <a href="faq.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Preguntas frecuentes
         </a>
       </div>
     </div>
   </div>
-  <div class="max-w-4xl mx-auto mt-6 text-center text-gray-500 text-xs sm:text-sm font-inter">
+  <div class="max-w-4xl mx-auto mt-4 sm:mt-6 text-center text-gray-500 text-xs sm:text-sm font-inter">
     <p>Ubify es una plataforma digital para la publicación de propiedades en toda la zona. No realiza intermediación inmobiliaria ni cobra comisiones por operaciones. Las negociaciones son responsabilidad exclusiva de las partes intervinientes.</p>
   </div>
-  <p class="text-center text-gray-500 mt-2 text-xs sm:text-sm font-inter">©2025 Ubify - Diseñado y desarrollado por Hostara.</p>
+  <p class="text-center text-gray-500 mt-2 text-xs sm:text-sm font-inter">© 2025 Ubify - Diseñado y desarrollado por Hostara.</p>
 </footer>
 
 <script src="app.js" type="module"></script>
