@@ -90,145 +90,357 @@
 
   <!-- Modal para agregar/editar propiedad -->
   <div class="modal" id="add-property-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="close-modal-btn">
-      <i class="fas fa-times"></i>
-    </button>
-    <div class="form-container">
-      <h2 class="form-title" id="modal-title">Agregar propiedad</h2>
-      <form id="propForm">
-        <div class="form-grid">
-          <!-- Primera columna -->
-          <div>
-            <div class="form-group">
-              <label for="title">Título de la propiedad</label>
-              <input type="text" id="title" name="title" class="form-control" placeholder="Ej: Moderno departamento en Palermo" required>
+    <div class="modal-content modern-modal">
+      <div class="modal-header">
+        <h2 class="form-title" id="modal-title">
+          <i class="fas fa-home"></i>
+          Agregar propiedad
+        </h2>
+        <button class="modal-close" id="close-modal-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="propForm" class="modern-form">
+          <!-- Sección de información básica -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-info-circle"></i> Información Básica</h3>
+              <div class="section-line"></div>
             </div>
             
-            <div class="form-group">
-              <label for="location">Ubicación</label>
-              <input type="text" id="location" name="location" class="form-control" placeholder="Ej: Palermo, Buenos Aires" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="type">Tipo de propiedad</label>
-              <select id="type" name="type" class="form-control" required>
-                <option value="">Seleccione un tipo</option>
-                <option value="Casa">Casa</option>
-                <option value="Departamento">Departamento</option>
-                <option value="PH">PH</option>
-                <option value="Oficina">Oficina</option>
-                <option value="Local">Local comercial</option>
-                <option value="Terreno">Terreno</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="operation">Operación</label>
-              <select id="operation" name="operation" class="form-control" required>
-                <option value="Venta">Venta</option>
-                <option value="Alquiler">Alquiler</option>
-                <option value="Alquiler temporal">Alquiler temporal</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="currency">Moneda</label>
-              <select id="currency" name="currency" class="form-control" required>
-                <option value="ARS">Pesos Argentinos (ARS)</option>
-                <option value="USD">Dólares Estadounidenses (USD)</option>
-                <option value="EUR">Euros (EUR)</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="price">Precio</label>
-              <div class="input-group">
-                <span class="input-group-text" id="currency-symbol">$</span>
-                <input type="number" id="price" name="price" class="form-control" placeholder="Ej: 150000" required>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="title">
+                  <i class="fas fa-tag"></i>
+                  Título de la propiedad
+                </label>
+                <input type="text" id="title" name="title" class="form-control modern-input" placeholder="Ej: Moderno departamento en Palermo" required>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="street">
+                  <i class="fas fa-road"></i>
+                  Calle
+                </label>
+                <input type="text" id="street" name="street" class="form-control modern-input" placeholder="Ej: Av. San Martín" required>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="streetNumber">
+                  <i class="fas fa-hashtag"></i>
+                  Número
+                </label>
+                <input type="text" id="streetNumber" name="streetNumber" class="form-control modern-input" placeholder="1234" required>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="city">
+                  <i class="fas fa-city"></i>
+                  Localidad
+                </label>
+                <input type="text" id="city" name="city" class="form-control modern-input" placeholder="Villa Ángela" required>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="province">
+                  <i class="fas fa-map-marked-alt"></i>
+                  Provincia
+                </label>
+                <select id="province" name="province" class="form-control modern-input" required>
+                  <option value="">Seleccionar provincia</option>
+                  <option value="Chaco">Chaco</option>
+                  <option value="Buenos Aires">Buenos Aires</option>
+                  <option value="CABA">Ciudad Autónoma de Buenos Aires</option>
+                  <option value="Córdoba">Córdoba</option>
+                  <option value="Santa Fe">Santa Fe</option>
+                  <option value="Mendoza">Mendoza</option>
+                  <option value="Tucumán">Tucumán</option>
+                  <option value="Salta">Salta</option>
+                  <option value="Entre Ríos">Entre Ríos</option>
+                  <option value="Corrientes">Corrientes</option>
+                  <option value="Misiones">Misiones</option>
+                  <option value="Santiago del Estero">Santiago del Estero</option>
+                  <option value="Formosa">Formosa</option>
+                  <option value="La Rioja">La Rioja</option>
+                  <option value="Catamarca">Catamarca</option>
+                  <option value="San Juan">San Juan</option>
+                  <option value="San Luis">San Luis</option>
+                  <option value="La Pampa">La Pampa</option>
+                  <option value="Río Negro">Río Negro</option>
+                  <option value="Neuquén">Neuquén</option>
+                  <option value="Chubut">Chubut</option>
+                  <option value="Santa Cruz">Santa Cruz</option>
+                  <option value="Tierra del Fuego">Tierra del Fuego</option>
+                </select>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Ubicación (generada automáticamente)
+                </label>
+                <input type="text" id="location" name="location" class="form-control modern-input" placeholder="Se generará automáticamente" readonly>
+                <small class="form-hint">Se genera automáticamente combinando los campos de arriba</small>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="mapUrl">
+                  <i class="fas fa-map-marked-alt"></i>
+                  Enlace del Mapa
+                </label>
+                <input type="url" id="mapUrl" name="mapUrl" class="form-control modern-input" placeholder="https://maps.google.com/maps?q=...">
+                <small class="form-hint">
+                  <strong>Instrucciones para obtener el enlace correcto:</strong><br>
+                  <strong>Opción 1 (Recomendada):</strong><br>
+                  1. Busca la ubicación en Google Maps<br>
+                  2. Haz clic en "Compartir" → "Insertar un mapa"<br>
+                  3. Copia el enlace que empiece con "https://www.google.com/maps/embed"<br><br>
+                  <strong>Opción 2:</strong><br>
+                  1. Busca la ubicación en Google Maps<br>
+                  2. Copia la URL completa de la página<br>
+                  3. Pégalo aquí (debe incluir coordenadas con @)<br><br>
+                  <em>❌ NO uses enlaces cortos como "maps.app.goo.gl"</em>
+                </small>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="type">
+                  <i class="fas fa-building"></i>
+                  Tipo de propiedad
+                </label>
+                <select id="type" name="type" class="form-control modern-select" required>
+                  <option value="">Seleccione un tipo</option>
+                  <option value="Casa">Casa</option>
+                  <option value="Departamento">Departamento</option>
+                  <option value="PH">PH</option>
+                  <option value="Oficina">Oficina</option>
+                  <option value="Local">Local comercial</option>
+                  <option value="Terreno">Terreno</option>
+                </select>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="operation">
+                  <i class="fas fa-handshake"></i>
+                  Operación
+                </label>
+                <select id="operation" name="operation" class="form-control modern-select" required>
+                  <option value="Venta">Venta</option>
+                  <option value="Alquiler">Alquiler</option>
+                  <option value="Alquiler temporal">Alquiler temporal</option>
+                </select>
+                <div class="input-focus-line"></div>
               </div>
             </div>
           </div>
-          
-          <!-- Segunda columna -->
-          <div>
-            <div class="form-group">
-              <label for="squareMeters">Metros cuadrados</label>
-              <div class="input-group">
-                <input type="number" id="squareMeters" name="squareMeters" class="form-control" placeholder="Ej: 85" required>
-                <span class="input-group-text">m²</span>
+
+          <!-- Sección de precio -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-dollar-sign"></i> Precio y Moneda</h3>
+              <div class="section-line"></div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="currency">
+                  <i class="fas fa-coins"></i>
+                  Moneda
+                </label>
+                <select id="currency" name="currency" class="form-control modern-select" required>
+                  <option value="ARS">Pesos Argentinos (ARS)</option>
+                  <option value="USD">Dólares Estadounidenses (USD)</option>
+                  <option value="EUR">Euros (EUR)</option>
+                </select>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="price">
+                  <i class="fas fa-money-bill-wave"></i>
+                  Precio
+                </label>
+                <div class="price-input-container">
+                  <span class="currency-symbol" id="currency-symbol">$</span>
+                  <input type="number" id="price" name="price" class="form-control modern-input price-input" placeholder="150000" required>
+                </div>
+                <div class="input-focus-line"></div>
               </div>
             </div>
-            
-            <div class="form-group">
-              <label for="bedrooms">Dormitorios</label>
-              <input type="number" id="bedrooms" name="bedrooms" class="form-control" placeholder="Ej: 2" required min="0">
+          </div>
+
+          <!-- Sección de características -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-ruler-combined"></i> Características</h3>
+              <div class="section-line"></div>
             </div>
             
-            <div class="form-group">
-              <label for="bathrooms">Baños</label>
-              <input type="number" id="bathrooms" name="bathrooms" class="form-control" placeholder="Ej: 1" required min="0">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="squareMeters">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                  Metros cuadrados
+                </label>
+                <div class="input-with-unit">
+                  <input type="number" id="squareMeters" name="squareMeters" class="form-control modern-input" placeholder="85" required>
+                  <span class="input-unit">m²</span>
+                </div>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="bedrooms">
+                  <i class="fas fa-bed"></i>
+                  Dormitorios
+                </label>
+                <input type="number" id="bedrooms" name="bedrooms" class="form-control modern-input" placeholder="2" required min="0">
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="bathrooms">
+                  <i class="fas fa-bath"></i>
+                  Baños
+                </label>
+                <input type="number" id="bathrooms" name="bathrooms" class="form-control modern-input" placeholder="1" required min="0">
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="amenities">
+                  <i class="fas fa-star"></i>
+                  Amenities
+                </label>
+                <input type="text" id="amenities" name="amenities" class="form-control modern-input" placeholder="Piscina, Cocina equipada, Garage, Balcón...">
+                <small class="form-hint">Separe con comas las características principales</small>
+                <div class="input-focus-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de contacto -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-user"></i> Información de Contacto</h3>
+              <div class="section-line"></div>
             </div>
             
-            <div class="form-group">
-              <label for="owner">Propietario/Contacto</label>
-              <input type="text" id="owner" name="owner" class="form-control" placeholder="Nombre del propietario" required>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="owner">
+                  <i class="fas fa-user-tie"></i>
+                  Propietario/Contacto
+                </label>
+                <input type="text" id="owner" name="owner" class="form-control modern-input" placeholder="Nombre del propietario" required>
+                <div class="input-focus-line"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="phone">
+                  <i class="fas fa-phone"></i>
+                  Teléfono de contacto
+                </label>
+                <input type="tel" id="phone" name="phone" class="form-control modern-input" placeholder="11 1234-5678" required>
+                <div class="input-focus-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de descripciones -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-align-left"></i> Descripciones</h3>
+              <div class="section-line"></div>
             </div>
             
-            <div class="form-group">
-              <label for="phone">Teléfono de contacto</label>
-              <input type="tel" id="phone" name="phone" class="form-control" placeholder="Ej: 11 1234-5678" required>
+            <div class="form-group full-width">
+              <label for="description">
+                <i class="fas fa-file-alt"></i>
+                Descripción corta
+              </label>
+              <textarea id="description" name="description" class="form-control modern-textarea" placeholder="Breve descripción que aparecerá en los listados" required maxlength="200"></textarea>
+              <div class="char-counter">
+                <span id="desc-counter">0</span>/200 caracteres
+              </div>
+              <div class="input-focus-line"></div>
             </div>
             
-            <div class="form-checkbox-container">
-              <input type="checkbox" id="featured" name="featured" class="form-checkbox">
-              <label for="featured" class="form-checkbox-label">Destacar esta propiedad</label>
+            <div class="form-group full-width">
+              <label for="detailedDescription">
+                <i class="fas fa-file-text"></i>
+                Descripción detallada
+              </label>
+              <textarea id="detailedDescription" name="detailedDescription" class="form-control modern-textarea" placeholder="Descripción completa con todos los detalles de la propiedad" required></textarea>
+              <div class="input-focus-line"></div>
             </div>
           </div>
-          
-          <!-- Campos de ancho completo -->
-          <div class="form-group full-width">
-            <label for="amenities">Amenities y características</label>
-            <input type="text" id="amenities" name="amenities" class="form-control" placeholder="Ej: Piscina, Cocina equipada, Garage, Balcón...">
-            <small class="form-hint">Separe con comas las características principales</small>
+
+          <!-- Sección de imágenes -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-images"></i> Imágenes</h3>
+              <div class="section-line"></div>
+            </div>
+            
+            <div class="form-group full-width">
+              <label for="images">
+                <i class="fas fa-camera"></i>
+                URLs de imágenes
+              </label>
+              <textarea id="images" name="images" class="form-control modern-textarea" placeholder="Ingrese una URL por línea o sepárelas por comas"></textarea>
+              <small class="form-hint">Recomendamos al menos 3 imágenes de buena calidad</small>
+              <div class="image-preview" id="image-preview"></div>
+              <div class="input-focus-line"></div>
+            </div>
           </div>
-          
-          <div class="form-group full-width">
-            <label for="description">Descripción corta</label>
-            <textarea id="description" name="description" class="form-control form-textarea" placeholder="Breve descripción que aparecerá en los listados" required maxlength="200"></textarea>
-            <small class="form-hint"><span id="desc-counter">0</span>/200 caracteres</small>
+
+          <!-- Sección de configuración -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3><i class="fas fa-cog"></i> Configuración</h3>
+              <div class="section-line"></div>
+            </div>
+            
+            <div class="form-group full-width">
+              <div class="checkbox-container">
+                <input type="checkbox" id="featured" name="featured" class="modern-checkbox">
+                <label for="featured" class="checkbox-label">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-star"></i>
+                  Destacar esta propiedad
+                </label>
+              </div>
+            </div>
           </div>
-          
-          <div class="form-group full-width">
-            <label for="detailedDescription">Descripción detallada</label>
-            <textarea id="detailedDescription" name="detailedDescription" class="form-control form-textarea" placeholder="Descripción completa con todos los detalles de la propiedad" required></textarea>
-          </div>
-          
-          <div class="form-group full-width image-upload-container">
-            <label for="images">Imágenes de la propiedad</label>
-            <textarea id="images" name="images" class="form-control form-textarea" placeholder="Ingrese una URL por línea o sepárelas por comas"></textarea>
-            <small class="form-hint">Recomendamos al menos 3 imágenes de buena calidad</small>
-            <div class="image-preview" id="image-preview"></div>
-          </div>
-        </div>
-        
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-btn">
-            <i class="fas fa-times"></i> Cancelar
-          </button>
-          <button type="submit" class="btn btn-success">
-            <span id="submit-btn-text">
-              <i class="fas fa-save"></i> Guardar Propiedad
-            </span>
-            <span class="btn-loading" id="submit-loading">
-              <i class="fas fa-spinner fa-spin"></i>
-            </span>
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modern-btn" id="cancel-btn">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button type="submit" form="propForm" class="btn btn-success modern-btn">
+          <span id="submit-btn-text">
+            <i class="fas fa-save"></i> Guardar Propiedad
+          </span>
+          <span class="btn-loading" id="submit-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
   <!-- Modal de confirmación -->
   <div class="modal" id="confirmation-modal">
     <div class="modal-content small-modal">
