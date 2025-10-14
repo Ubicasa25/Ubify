@@ -42,14 +42,36 @@ let editandoId = null;
 let currentProperties = [];
 let featuredPropertiesCount = 0;
 
+// Función de diagnóstico de Firebase
+async function testFirebaseConnection() {
+  try {
+    console.log("Testing Firebase connection...");
+    const testQuery = query(propiedadesRef, orderBy('title'));
+    const testSnapshot = await getDocs(testQuery);
+    console.log("Firebase connection successful. Properties count:", testSnapshot.size);
+    return true;
+  } catch (error) {
+    console.error("Firebase connection failed:", error);
+    showError("Error de conexión con Firebase: " + error.message);
+    return false;
+  }
+}
+
 // Inicializar la aplicación
-function init() {
+async function init() {
   console.log("Initializing application...");
   if (!form || !lista || !loadingSpinner) {
     console.error("Required DOM elements are missing:", { form, lista, loadingSpinner });
     showError("Error: Elementos del DOM no encontrados.");
     return;
   }
+  
+  // Probar conexión con Firebase
+  const firebaseConnected = await testFirebaseConnection();
+  if (!firebaseConnected) {
+    return;
+  }
+  
   setupEventListeners();
   cargarPropiedades();
 }
@@ -64,6 +86,12 @@ function setupEventListeners() {
   
   form?.addEventListener('submit', handleFormSubmit);
   
+  // Event listener adicional para el botón de submit fuera del formulario
+  document.querySelector('button[type="submit"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleFormSubmit(e);
+  });
+  
   searchBtn?.addEventListener('click', applyFilters);
   searchInput?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') applyFilters();
@@ -77,6 +105,12 @@ function setupEventListeners() {
   
   descriptionField?.addEventListener('input', updateCharacterCount);
   currencySelect?.addEventListener('change', updateCurrencySymbol);
+  
+  // Event listeners para generar ubicación automáticamente
+  document.getElementById('street')?.addEventListener('input', updateLocation);
+  document.getElementById('streetNumber')?.addEventListener('input', updateLocation);
+  document.getElementById('city')?.addEventListener('input', updateLocation);
+  document.getElementById('province')?.addEventListener('change', updateLocation);
 }
 
 // Actualizar símbolo de moneda
@@ -84,6 +118,37 @@ function updateCurrencySymbol() {
   const symbol = currencySelect.value === 'USD' ? 'US$' : 
                  currencySelect.value === 'EUR' ? '€' : '$';
   document.getElementById('currency-symbol').textContent = symbol;
+}
+
+// Actualizar ubicación automáticamente
+function updateLocation() {
+  const street = document.getElementById('street')?.value || '';
+  const streetNumber = document.getElementById('streetNumber')?.value || '';
+  const city = document.getElementById('city')?.value || '';
+  const province = document.getElementById('province')?.value || '';
+  
+  // Construir ubicación con los campos disponibles
+  let fullLocation = '';
+  if (street) {
+    fullLocation += street;
+    if (streetNumber) {
+      fullLocation += ` ${streetNumber}`;
+    }
+  }
+  if (city) {
+    if (fullLocation) fullLocation += ', ';
+    fullLocation += city;
+  }
+  if (province) {
+    if (fullLocation) fullLocation += ', ';
+    fullLocation += province;
+  }
+  
+  // Actualizar el campo de ubicación
+  const locationField = document.getElementById('location');
+  if (locationField && fullLocation) {
+    locationField.value = fullLocation;
+  }
 }
 
 // Actualizar contador de caracteres
@@ -344,6 +409,14 @@ function applyFilters() {
 function toggleFeaturedFilter() {
   console.log("Toggling featured filter...");
   filterFeatured.classList.toggle('active');
+  
+  // Actualizar el texto del botón
+  if (filterFeatured.classList.contains('active')) {
+    filterFeatured.innerHTML = '<i class="fas fa-star"></i> Mostrar todas';
+  } else {
+    filterFeatured.innerHTML = '<i class="fas fa-star"></i> Solo destacados';
+  }
+  
   applyFilters();
 }
 
@@ -354,6 +427,7 @@ function resetFilters() {
   filterOperation.value = '';
   filterType.value = '';
   filterFeatured.classList.remove('active');
+  filterFeatured.innerHTML = '<i class="fas fa-star"></i> Solo destacados';
   applyFilters();
 }
 
@@ -362,13 +436,41 @@ async function handleFormSubmit(e) {
   e.preventDefault();
   console.log("Submitting form...");
   
+  // Validar campos requeridos
+  const requiredFields = ['title', 'street', 'streetNumber', 'city', 'province', 'type', 'operation', 'price', 'currency', 'description', 'detailedDescription', 'squareMeters', 'bedrooms', 'bathrooms', 'owner', 'phone'];
+  const missingFields = [];
+  
+  requiredFields.forEach(fieldName => {
+    const field = form[fieldName];
+    if (!field || !field.value.trim()) {
+      missingFields.push(fieldName);
+    }
+  });
+  
+  if (missingFields.length > 0) {
+    showError(`Por favor complete los siguientes campos: ${missingFields.join(', ')}`);
+    return;
+  }
+  
+  const submitBtn = document.querySelector('button[type="submit"]');
   submitBtnText.style.display = 'none';
   submitLoading.style.display = 'inline-block';
-  form.querySelector('button[type="submit"]').disabled = true;
+  submitBtn.disabled = true;
+  
+  // Generar ubicación completa
+  const fullLocation = `${form.street.value} ${form.streetNumber.value}, ${form.city.value}, ${form.province.value}`;
+  
+  // Actualizar el campo de ubicación automáticamente
+  form.location.value = fullLocation;
   
   const data = {
     title: form.title.value,
-    location: form.location.value,
+    street: form.street.value,
+    streetNumber: form.streetNumber.value,
+    city: form.city.value,
+    province: form.province.value,
+    location: fullLocation,
+    mapUrl: form.mapUrl.value || null,
     type: form.type.value,
     operation: form.operation.value,
     price: Number(form.price.value),
@@ -393,24 +495,50 @@ async function handleFormSubmit(e) {
   };
 
   try {
-    if (editandoId) {
-      console.log("Updating property:", editandoId);
-      await updateDoc(doc(db, "propiedades", editandoId), data);
-      showConfirmation("Propiedad actualizada con éxito.");
-    } else {
-      console.log("Adding new property...");
-      await addDoc(propiedadesRef, data);
-      showConfirmation("Propiedad agregada con éxito.");
-    }
+    console.log("Form data:", data);
     
-    cargarPropiedades();
+    // Agregar timeout para evitar carga infinita
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout: La operación tardó demasiado')), 30000);
+    });
+    
+    const savePromise = (async () => {
+      if (editandoId) {
+        console.log("Updating property:", editandoId);
+        await updateDoc(doc(db, "propiedades", editandoId), data);
+        console.log("Property updated successfully");
+        showConfirmation("Propiedad actualizada con éxito.");
+      } else {
+        console.log("Adding new property...");
+        const docRef = await addDoc(propiedadesRef, data);
+        console.log("Property added successfully with ID:", docRef.id);
+        showConfirmation("Propiedad agregada con éxito.");
+      }
+      
+      console.log("Reloading properties...");
+      await cargarPropiedades();
+      console.log("Properties reloaded");
+      
+      // Cerrar el modal después de un breve delay
+      setTimeout(() => {
+        closeModal();
+      }, 1000);
+    })();
+    
+    await Promise.race([savePromise, timeoutPromise]);
   } catch (error) {
     console.error("Error saving property:", error);
+    console.error("Error details:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
     showError("Error al guardar la propiedad: " + error.message);
   } finally {
+    const submitBtn = document.querySelector('button[type="submit"]');
     submitBtnText.style.display = 'inline-block';
     submitLoading.style.display = 'none';
-    form.querySelector('button[type="submit"]').disabled = false;
+    submitBtn.disabled = false;
   }
 }
 
@@ -424,7 +552,12 @@ function editarPropiedad(id, p) {
     
     const fieldMap = {
       title: form.title,
+      street: form.street,
+      streetNumber: form.streetNumber,
+      city: form.city,
+      province: form.province,
       location: form.location,
+      mapUrl: form.mapUrl,
       type: form.type,
       operation: form.operation,
       price: form.price,
@@ -455,8 +588,34 @@ function editarPropiedad(id, p) {
       }
     }
     
+    // Manejar propiedades antiguas que no tienen los nuevos campos de ubicación
+    if (!p.street && p.location) {
+      // Intentar extraer información de la ubicación existente
+      const locationParts = p.location.split(',');
+      if (locationParts.length >= 2) {
+        const streetInfo = locationParts[0].trim().split(' ');
+        if (streetInfo.length >= 2) {
+          // Asumir que el último elemento es el número
+          form.street.value = streetInfo.slice(0, -1).join(' ');
+          form.streetNumber.value = streetInfo[streetInfo.length - 1];
+        } else {
+          form.street.value = locationParts[0].trim();
+        }
+        
+        if (locationParts.length >= 3) {
+          form.city.value = locationParts[1].trim();
+          form.province.value = locationParts[2].trim();
+        } else if (locationParts.length === 2) {
+          // Si solo hay 2 partes, asumir que la segunda es la ciudad
+          form.city.value = locationParts[1].trim();
+          form.province.value = 'Chaco'; // Valor por defecto
+        }
+      }
+    }
+    
     updateCharacterCount();
     updateCurrencySymbol();
+    updateLocation(); // Actualizar la ubicación automáticamente
     openModal();
   } catch (error) {
     console.error("Error preparing edit:", error);
