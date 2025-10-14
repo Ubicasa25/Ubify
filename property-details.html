@@ -30,16 +30,32 @@
     .property-card {
       background-color: #eff6ff;
       border: 1px solid #d1d5db;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       cursor: pointer;
       padding: 1.5rem;
-      min-height: 120px;
+      min-height: 140px;
+      position: relative;
+      overflow: hidden;
     }
     .property-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .property-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .property-card:hover::before {
+      opacity: 1;
     }
     .thumbnail {
       width: 80px;
@@ -446,43 +462,105 @@
         </div>
         <div id="thumbnailContainer" class="flex justify-start gap-2 sm:gap-3 mt-3 sm:mt-4 overflow-x-auto pb-3 sm:pb-4 px-1"></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6 sm:mt-8">
-          <div class="property-card">
-            <div class="flex items-center mb-2">
-              <span class="text-2xl mr-3">📍</span>
-              <div>
-                <h3 class="text-sm text-gray-600 font-inter">Ubicación</h3>
-                <p id="modalLocation" class="text-lg font-medium text-gray-800 font-montserrat"></p>
+          <div class="property-card bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200 hover:shadow-blue-200/50">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
+              <h3 class="text-sm text-gray-600 font-inter mb-1">Ubicación</h3>
+              <p id="modalLocation" class="text-base font-semibold text-gray-800 font-montserrat"></p>
             </div>
           </div>
-          <div class="property-card">
-            <div class="flex items-center mb-2">
-              <span class="text-2xl mr-3">📏</span>
-              <div>
-                <h3 class="text-sm text-gray-600 font-inter">Metros cuadrados</h3>
-                <p id="modalSquareMeters" class="text-lg font-medium text-gray-800 font-montserrat"></p>
+          
+          <div class="property-card bg-gradient-to-br from-green-50 to-emerald-100 border-green-200 hover:shadow-green-200/50">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
               </div>
+              <h3 class="text-sm text-gray-600 font-inter mb-1">Metros cuadrados</h3>
+              <p id="modalSquareMeters" class="text-base font-semibold text-gray-800 font-montserrat"></p>
             </div>
           </div>
-          <div class="property-card">
-            <div class="flex items-center mb-2">
-              <span class="text-2xl mr-3">🛏️</span>
-              <div>
-                <h3 class="text-sm text-gray-600 font-inter">Dormitorio/s</h3>
-                <p id="modalBedrooms" class="text-lg font-medium text-gray-800 font-montserrat"></p>
+          
+          <div class="property-card bg-gradient-to-br from-purple-50 to-violet-100 border-purple-200 hover:shadow-purple-200/50">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mb-3">
+                <span class="text-2xl">🛏️</span>
               </div>
+              <h3 class="text-sm text-gray-600 font-inter mb-1">Dormitorio/s</h3>
+              <p id="modalBedrooms" class="text-base font-semibold text-gray-800 font-montserrat"></p>
             </div>
           </div>
-          <div class="property-card">
-            <div class="flex items-center mb-2">
-              <span class="text-2xl mr-3">🛁</span>
-              <div>
-                <h3 class="text-sm text-gray-600 font-inter">Baño/s</h3>
-                <p id="modalBathrooms" class="text-lg font-medium text-gray-800 font-montserrat"></p>
+          
+          <div class="property-card bg-gradient-to-br from-orange-50 to-amber-100 border-orange-200 hover:shadow-orange-200/50">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mb-3">
+                <span class="text-2xl">🚿</span>
               </div>
+              <h3 class="text-sm text-gray-600 font-inter mb-1">Baño/s</h3>
+              <p id="modalBathrooms" class="text-base font-semibold text-gray-800 font-montserrat"></p>
             </div>
           </div>
         </div>
+        
+        <!-- Sección del Mapa -->
+        <div class="mt-8 sm:mt-10 border rounded-xl overflow-hidden shadow bg-white">
+          <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-4 sm:px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-montserrat font-semibold text-gray-800">Ubicación en el Mapa</h3>
+                <p class="text-sm text-gray-600">Visualiza la ubicación exacta de la propiedad</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 sm:p-6">
+            <div id="propertyMap" class="w-full h-64 sm:h-80 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+              <div id="mapPlaceholder" class="text-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <p class="text-sm">Mapa se cargará aquí</p>
+                <p class="text-xs text-gray-400 mt-1">Se configurará desde el panel de administración</p>
+              </div>
+              
+              <div id="mapLoading" class="text-center text-gray-500 hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 text-blue-400 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <p class="text-sm">Cargando mapa...</p>
+              </div>
+              
+              <div id="mapError" class="text-center text-gray-500 hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <p class="text-sm text-red-600">Error al cargar el mapa</p>
+                <p class="text-xs text-gray-400 mt-1">Verifica que el enlace sea válido</p>
+              </div>
+              
+              <iframe id="mapIframe" class="w-full h-full rounded-lg hidden" frameborder="0" style="border:0; width: 100%; height: 100%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="mt-4 text-center">
+              <button id="openInMaps" class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Abrir en Google Maps
+              </button>
+            </div>
+          </div>
+        </div>
+        
         <div class="mt-8 sm:mt-10 border rounded-xl overflow-hidden shadow bg-white">
           <button onclick="window.toggleAccordion('desc')" class="w-full text-left px-4 sm:px-6 py-4 bg-blue-100 hover:bg-blue-200 font-semibold flex justify-between items-center text-base sm:text-lg lg:text-xl font-montserrat transition-colors">
             <span class="flex items-center">
@@ -591,8 +669,22 @@
       <div>
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">¡Seguinos!</h3>
         <div class="flex justify-center sm:justify-start space-x-6">
+          <a href="https://www.facebook.com/" target="_blank" class="hover:scale-110 transition-transform">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/facebook.svg" alt="Facebook" class="w-5 h-5 sm:w-6 sm:h-6 text-[#1877F2]" />
+          </a>
           <a href="https://www.instagram.com/" target="_blank" class="hover:scale-110 transition-transform">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram" class="w-5 h-5 sm:w-6 sm:h-6 text-[#E4405F]" />
+          </a>
+          <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20más%20información%20sobre%20Ubify" target="_blank" class="hover:scale-110 transition-transform">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5 sm:w-6 sm:h-6 text-[#25D366]" />
+          </a>
+        </div>
+        <div class="mt-4 text-center sm:text-left">
+          <a href="faq.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Preguntas frecuentes
           </a>
         </div>
       </div>
@@ -811,6 +903,8 @@
             whatsappLink.title = 'Número de teléfono no disponible';
           }
 
+          // El botón de mapa se configura en la función loadPropertyMap
+
           // Configurar botón de favoritos para móvil
           const favoriteButtonMobile = document.getElementById('favoriteButtonMobile');
           if (favoriteButtonMobile) {
@@ -846,6 +940,9 @@
           }
 
           showLoading(false);
+          
+          // Cargar el mapa usando iframe
+          loadPropertyMap(property);
           
           // Mostrar el footer después de cargar la propiedad
           const mainFooter = document.getElementById('mainFooter');
@@ -962,6 +1059,147 @@
       }
     }
 
+    // Función para convertir enlaces de Google Maps a formato embed
+    function convertToEmbedUrl(url) {
+      // Si ya es un enlace de embed, devolverlo tal como está
+      if (url.includes('google.com/maps/embed')) {
+        return url;
+      }
+      
+      // Si es un enlace de maps.app.goo.gl, necesitamos convertirlo
+      if (url.includes('maps.app.goo.gl')) {
+        // Para enlaces cortos, intentar redirigir a la URL real
+        // Por ahora, mostrar mensaje de error ya que no podemos hacer fetch desde el cliente
+        console.warn('Los enlaces cortos de Google Maps no se pueden convertir automáticamente');
+        return null;
+      }
+      
+      // Si es un enlace de Google Maps normal, intentar convertirlo
+      if (url.includes('google.com/maps/')) {
+        // Para enlaces normales de Google Maps, intentar crear un embed
+        // Esto es más complejo sin API key, así que mejor mostrar el enlace original
+        console.warn('Los enlaces normales de Google Maps necesitan ser convertidos manualmente');
+        return null;
+      }
+      
+      return url;
+    }
+
+    // Función de prueba para cargar un mapa específico
+    window.testMap = function(url) {
+      console.log("Probando mapa con URL:", url);
+      const mapContainer = document.getElementById('propertyMap');
+      const mapLoading = document.getElementById('mapLoading');
+      const mapError = document.getElementById('mapError');
+      const mapIframe = document.getElementById('mapIframe');
+      
+      // Ocultar todos los estados
+      mapContainer.querySelector('#mapPlaceholder').style.display = 'none';
+      mapLoading.style.display = 'none';
+      mapError.style.display = 'none';
+      mapIframe.classList.add('hidden');
+      
+      // Mostrar loading
+      mapLoading.style.display = 'block';
+      
+      // Configurar iframe
+      mapIframe.src = url;
+      
+      // Eventos
+      mapIframe.onload = function() {
+        mapLoading.style.display = 'none';
+        mapIframe.classList.remove('hidden');
+        console.log("✅ Mapa de prueba cargado exitosamente");
+      };
+      
+      mapIframe.onerror = function() {
+        mapLoading.style.display = 'none';
+        mapError.style.display = 'block';
+        console.error("❌ Error al cargar mapa de prueba");
+      };
+    };
+
+    // Función para cargar el mapa usando iframe
+    function loadPropertyMap(property) {
+      const mapPlaceholder = document.getElementById('mapPlaceholder');
+      const mapLoading = document.getElementById('mapLoading');
+      const mapError = document.getElementById('mapError');
+      const mapIframe = document.getElementById('mapIframe');
+      const openInMapsButton = document.getElementById('openInMaps');
+      
+      // Ocultar todos los estados
+      mapPlaceholder.style.display = 'none';
+      mapLoading.style.display = 'none';
+      mapError.style.display = 'none';
+      mapIframe.classList.add('hidden');
+      
+      if (property.mapUrl) {
+        // Mostrar estado de carga
+        mapLoading.style.display = 'block';
+        
+        // Convertir URL a formato embed
+        const embedUrl = convertToEmbedUrl(property.mapUrl);
+        
+        // Si la conversión falló, mostrar error
+        if (!embedUrl) {
+          mapLoading.style.display = 'none';
+          mapError.style.display = 'block';
+          console.error("No se pudo convertir la URL del mapa");
+          return;
+        }
+        
+        // Configurar el iframe
+        mapIframe.src = embedUrl;
+        
+        // Eventos para manejar la carga del iframe
+        mapIframe.onload = function() {
+          // Ocultar loading y mostrar mapa
+          mapLoading.style.display = 'none';
+          mapIframe.classList.remove('hidden');
+          console.log("Mapa cargado exitosamente desde:", embedUrl);
+        };
+        
+        mapIframe.onerror = function() {
+          // Mostrar error
+          mapLoading.style.display = 'none';
+          mapError.style.display = 'block';
+          console.error("Error al cargar el mapa desde:", embedUrl);
+        };
+        
+        // Timeout para detectar si el iframe no carga
+        setTimeout(() => {
+          if (mapLoading.style.display !== 'none') {
+            console.warn("Timeout al cargar el mapa, intentando mostrar de todas formas");
+            mapLoading.style.display = 'none';
+            mapIframe.classList.remove('hidden');
+          }
+        }, 5000);
+        
+        // Configurar botón para abrir en Google Maps
+        if (openInMapsButton) {
+          openInMapsButton.onclick = () => {
+            window.open(property.mapUrl, '_blank');
+          };
+          openInMapsButton.classList.remove('opacity-50', 'pointer-events-none');
+          openInMapsButton.title = 'Abrir en Google Maps';
+        }
+        
+        console.log("Cargando mapa desde URL:", property.mapUrl);
+        console.log("URL convertida a embed:", embedUrl);
+      } else {
+        // Si no tiene URL del mapa, mostrar placeholder
+        mapPlaceholder.style.display = 'block';
+        
+        // Deshabilitar botón de abrir en mapa
+        if (openInMapsButton) {
+          openInMapsButton.classList.add('opacity-50', 'pointer-events-none');
+          openInMapsButton.title = 'URL del mapa no disponible';
+        }
+        
+        console.log("No se proporcionó URL del mapa");
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       console.log("DOM cargado, iniciando loadPropertyDetails...");
       window.loadPropertyDetails();
@@ -985,4 +1223,5 @@
     });
   </script>
 </body>
+</html>
 </html>
