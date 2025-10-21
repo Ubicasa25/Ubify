@@ -17,6 +17,12 @@ const db = getFirestore(app);
 let properties = [];
 let favoriteProperties = JSON.parse(localStorage.getItem('favoriteProperties')) || [];
 
+// Variables para paginación
+let currentFeaturedPage = 1;
+let currentAllPropertiesPage = 1;
+let currentSearchPage = 1;
+const PROPERTIES_PER_PAGE = 4;
+
 function getCurrencySymbol(currency) {
   switch(currency) {
     case 'USD': return 'USD ';
@@ -372,11 +378,22 @@ async function loadPropertiesFromFirestore() {
   }
 }
 
-function renderProperties(filteredProperties, containerId) {
+function renderProperties(filteredProperties, containerId, showPagination = false, currentPage = 1) {
   const container = document.getElementById(containerId);
   if (!container) return;
+  
+  // Calcular propiedades a mostrar según paginación
+  let propertiesToShow = filteredProperties;
+  let totalProperties = filteredProperties.length;
+  
+  if (showPagination) {
+    const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
+    const endIndex = startIndex + PROPERTIES_PER_PAGE;
+    propertiesToShow = filteredProperties.slice(startIndex, endIndex);
+  }
+  
   container.innerHTML = '';
-  filteredProperties.forEach(property => {
+  propertiesToShow.forEach(property => {
     const card = document.createElement('div');
     card.className = 'property-card group cursor-pointer';
     card.innerHTML = `
@@ -437,13 +454,168 @@ function renderProperties(filteredProperties, containerId) {
       toggleFavoriteProperty(property.id, e);
     });
   });
+  
+  // Agregar contador y botón "Ver más" si se requiere paginación
+  if (showPagination && totalProperties > PROPERTIES_PER_PAGE) {
+    const showingCount = Math.min(currentPage * PROPERTIES_PER_PAGE, totalProperties);
+    const hasMore = currentPage * PROPERTIES_PER_PAGE < totalProperties;
+    
+    // Crear contenedor fuera del grid para el botón
+    const paginationContainer = document.createElement('div');
+    paginationContainer.className = 'w-full col-span-full mt-8 text-center';
+    
+    paginationContainer.innerHTML = `
+      <div class="mb-4">
+        <p class="text-gray-600 text-sm">
+          Mostrando ${showingCount} de ${totalProperties} propiedades
+        </p>
+      </div>
+      ${hasMore ? `
+        <button class="load-more-btn bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          <span class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Ver más propiedades
+          </span>
+        </button>
+      ` : ''}
+    `;
+    
+    container.appendChild(paginationContainer);
+    
+    // Agregar event listener al botón "Ver más"
+    const loadMoreBtn = paginationContainer.querySelector('.load-more-btn');
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', () => {
+        loadMoreProperties(containerId, filteredProperties, currentPage + 1);
+      });
+    }
+  }
+}
+
+function loadMoreProperties(containerId, allProperties, newPage) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  // Determinar qué página actualizar
+  if (containerId === 'featuredProperties') {
+    currentFeaturedPage = newPage;
+  } else if (containerId === 'allProperties') {
+    currentAllPropertiesPage = newPage;
+  } else if (containerId === 'propertiesContainer') {
+    currentSearchPage = newPage;
+  }
+  
+  // Renderizar todas las propiedades hasta la página actual
+  const startIndex = 0;
+  const endIndex = newPage * PROPERTIES_PER_PAGE;
+  const propertiesToShow = allProperties.slice(startIndex, endIndex);
+  
+  // Limpiar el contenedor y renderizar todas las propiedades hasta ahora
+  container.innerHTML = '';
+  propertiesToShow.forEach(property => {
+    const card = document.createElement('div');
+    card.className = 'property-card group cursor-pointer';
+    card.innerHTML = `
+      <div class="card-image relative overflow-hidden">
+        <img src="${property.images?.[0] || 'https://via.placeholder.com/300x200'}"
+             alt="${property.title}"
+             class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+             loading="lazy">
+        <button class="favorite-btn ${isPropertyInFavorites(property.id) ? 'favorited' : ''} absolute top-3 right-3"
+                data-property-id="${property.id}"
+                aria-label="${isPropertyInFavorites(property.id) ? 'Remover de favoritos' : 'Añadir a favoritos'}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
+        ${property.featured ? '<div class="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">⭐ Destacada</div>' : ''}
+      </div>
+      <div class="card-content">
+        <div class="card-body">
+          <h4 class="text-lg font-montserrat font-semibold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">${property.title}</h4>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">${property.type}</span>
+            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">${property.operation}</span>
+            ${property.location ? `<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-medium">${property.location}</span>` : ''}
+          </div>
+          <p class="text-xl font-bold text-gray-900 mb-3">${getCurrencySymbol(property.currency)}${property.price ? property.price.toLocaleString() : 'Consultar'}</p>
+          <p class="text-gray-500 text-sm line-clamp-2 mb-4">${property.description || 'Sin descripción disponible'}</p>
+          <div class="flex gap-3 text-sm text-gray-600 mb-4">
+            ${property.bedrooms ? `<span class="flex items-center bg-blue-50 px-3 py-2 rounded-lg border border-blue-200"><i class="fas fa-bed text-blue-600 mr-2"></i><span class="font-medium text-blue-800">${property.bedrooms}</span></span>` : ''}
+            ${property.bathrooms ? `<span class="flex items-center bg-green-50 px-3 py-2 rounded-lg border border-green-200"><i class="fas fa-bath text-green-600 mr-2"></i><span class="font-medium text-green-800">${property.bathrooms}</span></span>` : ''}
+            ${property.squareMeters ? `<span class="flex items-center bg-purple-50 px-3 py-2 rounded-lg border border-purple-200"><i class="fas fa-ruler-combined text-purple-600 mr-2"></i><span class="font-medium text-purple-800">${property.squareMeters}m²</span></span>` : ''}
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="text-center py-2">
+            <p class="text-gray-400 text-xs">
+              <i class="fas fa-hand-pointer mr-1"></i>
+              Haz click para ver detalles
+            </p>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(card);
+    
+    // Hacer que toda la tarjeta sea clickeable
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.favorite-btn')) {
+        return;
+      }
+      window.location.href = `property-details.html?slug=${property.slug}`;
+    });
+    
+    const favoriteBtn = card.querySelector('.favorite-btn');
+    favoriteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavoriteProperty(property.id, e);
+    });
+  });
+  
+  // Agregar contador y botón actualizado
+  const totalProperties = allProperties.length;
+  const showingCount = Math.min(newPage * PROPERTIES_PER_PAGE, totalProperties);
+  const hasMore = newPage * PROPERTIES_PER_PAGE < totalProperties;
+  
+  const paginationContainer = document.createElement('div');
+  paginationContainer.className = 'w-full col-span-full mt-8 text-center';
+  
+  paginationContainer.innerHTML = `
+    <div class="mb-4">
+      <p class="text-gray-600 text-sm">
+        Mostrando ${showingCount} de ${totalProperties} propiedades
+      </p>
+    </div>
+    ${hasMore ? `
+      <button class="load-more-btn bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+        <span class="flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Ver más propiedades
+        </span>
+      </button>
+    ` : ''}
+  `;
+  
+  container.appendChild(paginationContainer);
+  
+  // Agregar event listener al nuevo botón
+  const loadMoreBtn = paginationContainer.querySelector('.load-more-btn');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      loadMoreProperties(containerId, allProperties, newPage + 1);
+    });
+  }
 }
 
 function filterProperties() {
   if (!document.getElementById('searchInput')) {
     // Estamos en detalles o página que no tiene buscador
-    renderProperties(properties.filter(p => p.featured), 'featuredProperties');
-    renderProperties(properties.filter(p => !p.featured), 'allProperties');
+    renderProperties(properties.filter(p => p.featured), 'featuredProperties', true, currentFeaturedPage);
+    renderProperties(properties.filter(p => !p.featured), 'allProperties', true, currentAllPropertiesPage);
     return;
   }
 
@@ -500,6 +672,14 @@ function filterProperties() {
   // Mostrar resultados de búsqueda o propiedades destacadas
   const hasActiveFilters = search || operation || type || sort;
   
+  // Resetear páginas cuando hay filtros activos
+  if (hasActiveFilters) {
+    currentSearchPage = 1;
+  } else {
+    currentFeaturedPage = 1;
+    currentAllPropertiesPage = 1;
+  }
+  
   if (hasActiveFilters) {
     document.getElementById('searchResultsHeader')?.classList.remove('hidden');
     document.getElementById('featuredSection')?.classList.add('hidden');
@@ -521,7 +701,7 @@ function filterProperties() {
     } else {
       document.getElementById('propertiesContainer')?.classList.remove('hidden');
       document.getElementById('noResultsMessage')?.classList.add('hidden');
-      renderProperties(filtered, 'propertiesContainer');
+      renderProperties(filtered, 'propertiesContainer', true, currentSearchPage);
     }
   } else {
     document.getElementById('searchResultsHeader')?.classList.add('hidden');
@@ -529,8 +709,8 @@ function filterProperties() {
     document.getElementById('noResultsMessage')?.classList.add('hidden');
     document.getElementById('featuredSection')?.classList.remove('hidden');
     document.getElementById('allPropertiesSection')?.classList.remove('hidden');
-    renderProperties(properties.filter(p => p.featured), 'featuredProperties');
-    renderProperties(properties.filter(p => !p.featured), 'allProperties');
+    renderProperties(properties.filter(p => p.featured), 'featuredProperties', true, currentFeaturedPage);
+    renderProperties(properties.filter(p => !p.featured), 'allProperties', true, currentAllPropertiesPage);
   }
 }
 
