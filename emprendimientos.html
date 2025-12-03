@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ubify | Emprendimientos</title>
+  <meta name="description" content="Guía de emprendimientos en Villa Ángela. Gastronomía, ropa, servicios y más.">
+  <link rel="icon" type="image/png" href="favicon-pestaña-original.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+    
+    /* Estilos personalizados para el select */
+    select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* Animaciones de carga */
+    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+  <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-14 sm:h-16 items-center">
+        <a href="index.html" class="flex items-center text-gray-700 hover:text-blue-600 transition font-bold text-lg sm:text-xl">
+          <span class="text-blue-600 mr-1">Ubify</span> Emprendimientos
+        </a>
+        <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-500 hover:text-gray-900">
+          &larr; Ir a Propiedades
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="relative bg-gray-900 text-white py-12 sm:py-24">
+    <div class="absolute inset-0 overflow-hidden">
+      <img src="https://images.unsplash.com/photo-1550418290-a8d86ad674a6?q=80&w=1170&auto=format&fit=crop" 
+           alt="Fondo" class="w-full h-full object-cover opacity-30">
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 sm:mb-4 leading-tight">
+        Apoyá el comercio local
+      </h1>
+      <p class="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
+        Descubrí los mejores emprendimientos de la ciudad. Gastronomía, indumentaria, servicios y más.
+      </p>
+
+      <div class="bg-white p-1.5 sm:p-2 rounded-xl sm:rounded-2xl shadow-xl max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2">
+        
+        <div class="sm:col-span-2 relative border-b sm:border-b-0 sm:border-r border-gray-100">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input type="text" id="searchBusiness" 
+            class="block w-full pl-10 pr-3 py-2.5 sm:py-3 border-none rounded-xl leading-5 bg-transparent placeholder-gray-500 focus:outline-none focus:ring-0 text-gray-900 text-sm sm:text-base" 
+            placeholder="¿Qué estás buscando?">
+        </div>
+
+        <div class="relative">
+            <select id="categoryFilter" 
+              class="block w-full pl-3 pr-10 py-2.5 sm:py-3 border-none rounded-xl leading-5 bg-transparent focus:outline-none focus:ring-0 text-gray-900 font-medium cursor-pointer hover:bg-gray-50 transition-colors text-sm sm:text-base">
+              <option value="">Todas las categorías</option>
+              <option value="Gastronomía">Gastronomía</option>
+              <option value="Indumentaria">Indumentaria</option>
+              <option value="Accesorios">Accesorios</option>
+              <option value="Servicios">Servicios</option>
+              <option value="Tecnología">Tecnología</option>
+              <option value="Hogar">Hogar</option>
+              <option value="Belleza">Belleza</option>
+            </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 -mt-8 sm:-mt-10 relative z-10 flex-grow">
+    
+    <div id="loadingIndicator" class="text-center py-12 sm:py-20">
+      <div class="relative w-12 h-12 sm:w-16 sm:h-16 mx-auto">
+        <div class="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-blue-600 rounded-full animate-spin border-t-transparent"></div>
+      </div>
+      <p class="text-gray-500 mt-4 font-medium animate-pulse text-sm sm:text-base">Buscando los mejores lugares...</p>
+    </div>
+
+    <div id="businessContainer" class="grid gap-4 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 hidden">
+      </div>
+
+    <div id="noResults" class="hidden text-center py-12 sm:py-20 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100">
+      <div class="bg-gray-50 w-16 h-16 sm:w-24 sm:h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="h-8 w-8 sm:h-10 sm:w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">No encontramos resultados</h3>
+      <p class="text-gray-500 max-w-md mx-auto text-sm sm:text-base px-4">Parece que no hay emprendimientos con esa búsqueda. ¡Prueba con otra categoría!</p>
+      <button onclick="document.getElementById('searchBusiness').value=''; document.getElementById('categoryFilter').value=''; filterBusinesses()" class="mt-4 sm:mt-6 text-blue-600 font-semibold hover:underline text-sm sm:text-base">
+        Ver todo
+      </button>
+    </div>
+
+  </main>
+
+  <footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 border-t border-gray-200 mt-auto">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-3 text-center sm:text-left">
+      <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+        <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Ubify | Emprendimientos</h3>
+        <p class="text-gray-600 text-sm sm:text-base font-inter">Emprendimientos de toda la ciudad. Encontrá un emprendimiento o publicá el tuyo.</p>
+      </div>
+      <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+        <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Contáctanos</h3>
+        <p class="text-gray-600 text-sm sm:text-base font-inter mb-3">¿Querés publicar tu emprendimiento?</p>
+        <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20publicar%20mi%20emprendimiento%20en%20Ubify" target="_blank" class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base hover:bg-green-600 transition duration-300 font-inter w-full sm:w-auto">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-4 h-4 sm:w-5 sm:h-5 mr-2 invert" />
+          Quiero publicar
+        </a>
+      </div>
+      <div>
+        <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">¡Seguinos!</h3>
+        <div class="flex justify-center sm:justify-start space-x-6">
+          <a href="https://www.facebook.com/" target="_blank" class="hover:scale-110 transition-transform">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/facebook.svg" alt="Facebook" class="w-5 h-5 sm:w-6 sm:h-6 text-[#1877F2]" />
+          </a>
+          <a href="https://www.instagram.com/ubify.ar" target="_blank" class="hover:scale-110 transition-transform">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram" class="w-5 h-5 sm:w-6 sm:h-6 text-[#E4405F]" />
+          </a>
+          <a href="https://wa.me/+543735308294?text=Hola,%20quiero%20más%20información%20sobre%20Ubify" target="_blank" class="hover:scale-110 transition-transform">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5 sm:w-6 sm:h-6 text-[#25D366]" />
+          </a>
+        </div>
+        <div class="mt-4 text-center sm:text-left">
+          <a href="faq.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Preguntas frecuentes
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto mt-4 sm:mt-6 text-center text-gray-500 text-xs sm:text-sm font-inter">
+     <p>Ubify es una vitrina digital gratuita para potenciar el comercio local. Actúa únicamente como medio de difusión y no interviene en pedidos, cobros ni envíos. Las transacciones son responsabilidad exclusiva del comprador y el vendedor.</p>
+    </div>
+    <p class="text-center text-gray-500 mt-2 text-xs sm:text-sm font-inter">© 2025 Ubify - Diseñado y desarrollado por Hostara.</p>
+  </footer>
+
+  <div id="detailModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 transition-opacity" id="modalBackdrop"></div>
+
+    <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+        
+        <div class="relative h-64 sm:h-72">
+          <img id="modalImg" src="" alt="Detalle" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <button id="closeModalBtn" class="absolute top-4 right-4 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white">
+            <span id="modalCategory" class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-2 inline-block shadow-sm">
+              Categoría
+            </span>
+            <h3 id="modalTitle" class="text-2xl sm:text-3xl font-bold leading-tight">
+              Nombre Emprendimiento
+            </h3>
+          </div>
+        </div>
+
+        <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+          <div class="flex items-center text-gray-600 mb-4">
+            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span id="modalLocation" class="font-medium">Ubicación</span>
+          </div>
+
+          <div class="prose prose-sm max-w-none text-gray-600 mb-6">
+            <p id="modalDesc" class="whitespace-pre-line leading-relaxed">
+              Descripción...
+            </p>
+          </div>
+
+          <div class="w-full h-48 bg-gray-100 rounded-xl overflow-hidden mb-6 border border-gray-200 shadow-inner relative">
+             <iframe id="modalMap" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+             <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                <p class="text-gray-400 text-xs">Cargando mapa...</p>
+             </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3" id="modalButtons">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="business.js"></script>
+
+</body>
+</html>
