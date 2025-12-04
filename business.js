@@ -25,6 +25,7 @@ const closeModalBtn = document.getElementById('closeModalBtn');
 async function loadBusinesses() {
   const container = document.getElementById('businessContainer');
   const loader = document.getElementById('loadingIndicator');
+  const footer = document.getElementById('mainFooter'); // Referencia al Footer
   
   try {
     const querySnapshot = await getDocs(collection(db, "emprendimientos"));
@@ -35,14 +36,21 @@ async function loadBusinesses() {
 
     loader.classList.add('hidden');
     container.classList.remove('hidden');
+    
     renderBusinesses(allBusinesses);
+
   } catch (error) {
-    console.error("Error cargando emprendimientos:", error);
+    console.error("Error:", error);
     loader.innerHTML = `<p class="text-red-500">Error al cargar datos. Intenta recargar.</p>`;
+  } finally {
+    // ESTO SE EJECUTA SIEMPRE, HAYA ERROR O NO
+    if (footer) {
+        footer.classList.remove('hidden');
+    }
   }
 }
 
-// Renderizar Cards (Diseño Responsive)
+// Renderizar Cards
 function renderBusinesses(businesses) {
   const container = document.getElementById('businessContainer');
   const noResults = document.getElementById('noResults');
@@ -59,7 +67,7 @@ function renderBusinesses(businesses) {
   container.classList.remove('hidden');
 
   businesses.forEach(biz => {
-    const imageSrc = biz.imagen || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=500&q=60';
+    const imageSrc = biz.imagen || 'https://via.placeholder.com/400x300?text=Sin+Imagen';
     
     let whatsappLink = '#';
     if(biz.telefono) {
@@ -70,19 +78,18 @@ function renderBusinesses(businesses) {
     const card = document.createElement('div');
     card.className = 'group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1 cursor-pointer';
     
-    // Clic en toda la tarjeta abre el modal
     card.onclick = () => openBusinessModal(biz);
 
+    /* DISEÑO LOGO CENTRADO */
     card.innerHTML = `
-      <div class="relative h-48 sm:h-56 overflow-hidden">
-        <img src="${imageSrc}" alt="${biz.nombre}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <div class="relative h-48 md:h-60 overflow-hidden bg-gray-50 flex items-center justify-center border-b border-gray-100">
+        <img src="${imageSrc}" alt="${biz.nombre}" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500">
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white/90 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-bold text-blue-600 shadow-md border border-white/50">
           ${getCategoryIcon(biz.categoria)} ${biz.categoria || 'Varios'}
         </div>
       </div>
       
-      <div class="p-4 sm:p-6 flex flex-col flex-1 relative">
+      <div class="p-4 md:p-7 flex flex-col flex-1 relative">
         <h3 class="text-lg sm:text-xl font-extrabold text-gray-800 mb-1 sm:mb-2 leading-tight group-hover:text-blue-600 transition-colors">
             ${biz.nombre}
         </h3>
@@ -130,18 +137,32 @@ function openBusinessModal(biz) {
     document.getElementById('modalCategory').textContent = biz.categoria || 'Comercio';
     document.getElementById('modalDesc').textContent = biz.descripcion || 'Sin descripción detallada.';
     document.getElementById('modalLocation').textContent = address;
-    document.getElementById('modalImg').src = imageSrc;
-
-    // --- LÓGICA MAPA (Prioridad a Link manual) ---
-    const iframeMap = document.getElementById('modalMap');
     
+    const modalImg = document.getElementById('modalImg');
+    modalImg.src = imageSrc;
+    // Forzamos clases para el modal especifico
+    modalImg.className = "w-full h-full object-contain p-4 bg-gray-100";
+
+    // --- LÓGICA MAPA ---
+    const iframeMap = document.getElementById('modalMap');
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    
+    loadingOverlay.classList.remove('hidden');
+    iframeMap.src = ''; 
+
+    let mapUrlStr = '';
     if (biz.mapUrl && biz.mapUrl.length > 10) {
-        iframeMap.src = biz.mapUrl; // Usa el link manual del admin
+        mapUrlStr = biz.mapUrl;
     } else {
-        // Automático
         const mapQuery = encodeURIComponent(address + ", Villa Angela, Chaco, Argentina");
-        iframeMap.src = `http://googleusercontent.com/maps.google.com/maps?q=${mapQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        mapUrlStr = `http://googleusercontent.com/maps.google.com/maps?q=${mapQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
     }
+
+    iframeMap.onload = function() {
+        loadingOverlay.classList.add('hidden');
+    };
+
+    iframeMap.src = mapUrlStr;
 
     // Botones del Modal
     const btnContainer = document.getElementById('modalButtons');
@@ -184,7 +205,7 @@ function openBusinessModal(biz) {
 function closeModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = ''; 
-    document.getElementById('modalMap').src = '';
+    document.getElementById('modalMap').src = ''; 
 }
 
 closeModalBtn.addEventListener('click', closeModal);
@@ -193,15 +214,41 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
 });
 
-// Filtros
+// BUSCADOR INTELIGENTE CON SINÓNIMOS
 function filterBusinesses() {
-  const searchTerm = document.getElementById('searchBusiness').value.toLowerCase();
+  const searchTerm = document.getElementById('searchBusiness').value.toLowerCase().trim();
   const categoryValue = document.getElementById('categoryFilter').value;
+
+  // Diccionario de sinónimos
+  const synonyms = {
+      'comida': 'gastronomía', 'almuerzo': 'gastronomía', 'cena': 'gastronomía',
+      'bebidas': 'gastronomía', 'tragos': 'gastronomía', 'hamburguesa': 'gastronomía',
+      'pizza': 'gastronomía', 'helado': 'gastronomía', 'bar': 'gastronomía',
+      'restaurante': 'gastronomía', 'delivery': 'gastronomía',
+      'ropa': 'indumentaria', 'moda': 'indumentaria', 'zapatillas': 'indumentaria',
+      'calzado': 'indumentaria', 'vestido': 'indumentaria', 'remera': 'indumentaria',
+      'celular': 'tecnología', 'pc': 'tecnología', 'computadora': 'tecnología',
+      'iphone': 'tecnología', 'funda': 'tecnología', 'cargador': 'tecnología',
+      'regalo': 'accesorios', 'joya': 'accesorios', 'reloj': 'accesorios',
+      'muebles': 'hogar', 'deco': 'hogar', 'sillón': 'hogar', 'mesa': 'hogar',
+      'uñas': 'belleza', 'pelo': 'belleza', 'maquillaje': 'belleza', 
+      'makeup': 'belleza', 'peluquería': 'belleza', 'estética': 'belleza'
+  };
+
+  let impliedCategory = '';
+  for (const key in synonyms) {
+      if (searchTerm.includes(key)) {
+          impliedCategory = synonyms[key].toLowerCase();
+          break; 
+      }
+  }
 
   const filtered = allBusinesses.filter(biz => {
     const matchesSearch = 
       biz.nombre.toLowerCase().includes(searchTerm) || 
-      (biz.descripcion && biz.descripcion.toLowerCase().includes(searchTerm));
+      (biz.descripcion && biz.descripcion.toLowerCase().includes(searchTerm)) ||
+      (biz.categoria && biz.categoria.toLowerCase().includes(searchTerm)) ||
+      (impliedCategory && biz.categoria && biz.categoria.toLowerCase().includes(impliedCategory));
     
     const matchesCategory = categoryValue === "" || biz.categoria === categoryValue;
 
