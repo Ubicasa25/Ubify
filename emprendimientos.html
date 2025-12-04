@@ -14,7 +14,6 @@
     body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
     h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
     
-    /* Estilos personalizados para el select */
     select {
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
       background-position: right 0.5rem center;
@@ -25,7 +24,6 @@
       appearance: none;
     }
 
-    /* Animaciones de carga */
     .animate-fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
@@ -47,10 +45,11 @@
 
   <header class="relative bg-gray-900 text-white py-12 sm:py-24">
     <div class="absolute inset-0 overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1550418290-a8d86ad674a6?q=80&w=1170&auto=format&fit=crop" 
-           alt="Fondo" class="w-full h-full object-cover opacity-30">
+      <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1470&auto=format&fit=crop" 
+           alt="Fondo" class="w-full h-full object-cover opacity-20">
     </div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    
+    <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 sm:mb-4 leading-tight">
         Apoyá el comercio local
       </h1>
@@ -85,6 +84,20 @@
             </select>
         </div>
       </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style="animation-delay: 0.2s;">
+        
+        <a href="publicar-emprendimiento.html" 
+           class="inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-full shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative z-30">
+           Publicar GRATIS
+        </a>
+
+        <button onclick="document.getElementById('businessContainer').scrollIntoView({behavior: 'smooth'})"
+           class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white border-2 border-white/30 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 hover:border-white/50 transition-all duration-300 cursor-pointer relative z-30">
+           Ver Emprendimientos
+        </button>
+
+      </div>
     </div>
   </header>
 
@@ -98,7 +111,7 @@
       <p class="text-gray-500 mt-4 font-medium animate-pulse text-sm sm:text-base">Buscando los mejores lugares...</p>
     </div>
 
-    <div id="businessContainer" class="grid gap-4 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 hidden">
+    <div id="businessContainer" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 hidden">
       </div>
 
     <div id="noResults" class="hidden text-center py-12 sm:py-20 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100">
@@ -116,7 +129,7 @@
 
   </main>
 
-  <footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 border-t border-gray-200 mt-auto">
+  <footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 border-t border-gray-200 mt-auto hidden">
     <div class="max-w-6xl mx-auto grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-3 text-center sm:text-left">
       <div class="border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
         <h3 class="text-lg sm:text-xl font-montserrat font-semibold mb-3 sm:mb-4 text-gray-800">Ubify | Emprendimientos</h3>
@@ -199,10 +212,14 @@
             </p>
           </div>
 
-          <div class="w-full h-48 bg-gray-100 rounded-xl overflow-hidden mb-6 border border-gray-200 shadow-inner relative">
-             <iframe id="modalMap" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-             <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                <p class="text-gray-400 text-xs">Cargando mapa...</p>
+          <div class="w-full h-48 bg-gray-100 rounded-xl overflow-hidden mb-6 border border-gray-200 shadow-inner relative isolate">
+             <iframe id="modalMap" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="relative z-10"></iframe>
+             
+             <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-100 z-0">
+                <p class="text-gray-400 text-xs flex items-center">
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Cargando mapa...
+                </p>
              </div>
           </div>
 
