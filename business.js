@@ -25,7 +25,7 @@ const closeModalBtn = document.getElementById('closeModalBtn');
 async function loadBusinesses() {
   const container = document.getElementById('businessContainer');
   const loader = document.getElementById('loadingIndicator');
-  const footer = document.getElementById('mainFooter'); // Referencia al Footer
+  const footer = document.getElementById('mainFooter');
   
   try {
     const querySnapshot = await getDocs(collection(db, "emprendimientos"));
@@ -39,14 +39,22 @@ async function loadBusinesses() {
     
     renderBusinesses(allBusinesses);
 
+    // Detección de Link Compartido
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedId = urlParams.get('id');
+    
+    if (sharedId) {
+        const sharedBusiness = allBusinesses.find(b => b.id === sharedId);
+        if (sharedBusiness) {
+            setTimeout(() => openBusinessModal(sharedBusiness), 200);
+        }
+    }
+
   } catch (error) {
     console.error("Error:", error);
     loader.innerHTML = `<p class="text-red-500">Error al cargar datos. Intenta recargar.</p>`;
   } finally {
-    // ESTO SE EJECUTA SIEMPRE, HAYA ERROR O NO
-    if (footer) {
-        footer.classList.remove('hidden');
-    }
+    if (footer) footer.classList.remove('hidden');
   }
 }
 
@@ -75,12 +83,24 @@ function renderBusinesses(businesses) {
         whatsappLink = `https://wa.me/${biz.telefono.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
     }
 
+    // Etiquetas
+    let tagsHtml = '';
+    if (biz.tags && Array.isArray(biz.tags)) {
+        biz.tags.slice(0, 3).forEach(tag => {
+            tagsHtml += `<span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full border border-gray-200 whitespace-nowrap">${getTagIcon(tag)} ${tag}</span>`;
+        });
+    }
+
+    // Lógica de Ubicación en Card
+    let locationText = biz.ubicacion;
+    if (!biz.ubicacion || biz.ubicacion.trim() === '') {
+        locationText = "Solo Delivery / A coordinar";
+    }
+
     const card = document.createElement('div');
     card.className = 'group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1 cursor-pointer';
-    
     card.onclick = () => openBusinessModal(biz);
 
-    /* DISEÑO LOGO CENTRADO */
     card.innerHTML = `
       <div class="relative h-48 md:h-60 overflow-hidden bg-gray-50 flex items-center justify-center border-b border-gray-100">
         <img src="${imageSrc}" alt="${biz.nombre}" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500">
@@ -94,12 +114,16 @@ function renderBusinesses(businesses) {
             ${biz.nombre}
         </h3>
         
-        <div class="flex items-start text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4">
+        <div class="flex items-start text-gray-500 text-xs sm:text-sm mb-3">
             <svg class="w-4 h-4 mr-1 mt-0.5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
-            <span class="line-clamp-1">${biz.ubicacion || 'Villa Ángela'}</span>
+            <span class="line-clamp-1">${locationText}</span>
+        </div>
+
+        <div class="flex flex-wrap gap-1 mb-4">
+            ${tagsHtml}
         </div>
 
         <p class="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed flex-1">
@@ -131,40 +155,61 @@ function renderBusinesses(businesses) {
 // Función Modal
 function openBusinessModal(biz) {
     const imageSrc = biz.imagen || 'https://via.placeholder.com/600x400';
-    const address = biz.ubicacion || 'Villa Ángela, Chaco';
+    
+    // Si no tiene ubicación, mostramos mensaje especial
+    const hasLocation = (biz.ubicacion && biz.ubicacion.trim() !== '');
+    const address = hasLocation ? biz.ubicacion : 'Solo Delivery / A coordinar';
     
     document.getElementById('modalTitle').textContent = biz.nombre;
     document.getElementById('modalCategory').textContent = biz.categoria || 'Comercio';
-    document.getElementById('modalDesc').textContent = biz.descripcion || 'Sin descripción detallada.';
+    
+    // Etiquetas
+    let tagsDesc = '';
+    if (biz.tags && Array.isArray(biz.tags) && biz.tags.length > 0) {
+        tagsDesc = '<div class="flex flex-wrap gap-2 mb-4">';
+        biz.tags.forEach(tag => {
+            tagsDesc += `<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold border border-blue-100 flex items-center gap-1">${getTagIcon(tag)} ${tag}</span>`;
+        });
+        tagsDesc += '</div>';
+    }
+    
+    document.getElementById('modalDesc').innerHTML = tagsDesc + (biz.descripcion || 'Sin descripción detallada.');
     document.getElementById('modalLocation').textContent = address;
     
     const modalImg = document.getElementById('modalImg');
     modalImg.src = imageSrc;
-    // Forzamos clases para el modal especifico
     modalImg.className = "w-full h-full object-contain p-4 bg-gray-100";
 
-    // --- LÓGICA MAPA ---
+    // --- LÓGICA MAPA INTELIGENTE ---
     const iframeMap = document.getElementById('modalMap');
     const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    
-    loadingOverlay.classList.remove('hidden');
-    iframeMap.src = ''; 
+    const mapContainer = document.getElementById('modalMapContainer');
 
-    let mapUrlStr = '';
-    if (biz.mapUrl && biz.mapUrl.length > 10) {
-        mapUrlStr = biz.mapUrl;
+    if (hasLocation) {
+        // SI TIENE UBICACIÓN: MOSTRAR MAPA
+        mapContainer.classList.remove('hidden');
+        loadingOverlay.classList.remove('hidden');
+        iframeMap.src = ''; 
+
+        let mapUrlStr = '';
+        if (biz.mapUrl && biz.mapUrl.length > 10) {
+            mapUrlStr = biz.mapUrl;
+        } else {
+            const mapQuery = encodeURIComponent(address + ", Villa Angela, Chaco, Argentina");
+            mapUrlStr = `http://googleusercontent.com/maps.google.com/maps?q=${mapQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        }
+
+        iframeMap.onload = function() {
+            loadingOverlay.classList.add('hidden');
+        };
+        iframeMap.src = mapUrlStr;
     } else {
-        const mapQuery = encodeURIComponent(address + ", Villa Angela, Chaco, Argentina");
-        mapUrlStr = `http://googleusercontent.com/maps.google.com/maps?q=${mapQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        // SI NO TIENE UBICACIÓN: OCULTAR MAPA COMPLETO
+        mapContainer.classList.add('hidden');
     }
+    // -------------------------------
 
-    iframeMap.onload = function() {
-        loadingOverlay.classList.add('hidden');
-    };
-
-    iframeMap.src = mapUrlStr;
-
-    // Botones del Modal
+    // Botones
     const btnContainer = document.getElementById('modalButtons');
     let buttonsHtml = '';
 
@@ -172,7 +217,7 @@ function openBusinessModal(biz) {
         const text = `Hola ${biz.nombre}, vi su perfil en Ubify y quería consultar...`;
         const waLink = `https://wa.me/${biz.telefono.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
         buttonsHtml += `
-        <a href="${waLink}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-green-50 text-green-700 hover:bg-green-100 transition">
+        <a href="${waLink}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-green-50 text-green-700 hover:bg-green-100 transition border border-green-100">
             <i class="fab fa-whatsapp text-2xl mb-1"></i>
             <span class="text-xs font-bold">WhatsApp</span>
         </a>`;
@@ -180,7 +225,7 @@ function openBusinessModal(biz) {
 
     if(biz.instagram) {
         buttonsHtml += `
-        <a href="${biz.instagram}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition">
+        <a href="${biz.instagram}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition border border-purple-100">
             <i class="fab fa-instagram text-2xl mb-1"></i>
             <span class="text-xs font-bold">Instagram</span>
         </a>`;
@@ -188,13 +233,18 @@ function openBusinessModal(biz) {
 
     if(biz.web) {
         buttonsHtml += `
-        <a href="${biz.web}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
+        <a href="${biz.web}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition border border-blue-100">
             <i class="fas fa-globe text-2xl mb-1"></i>
             <span class="text-xs font-bold">Sitio Web</span>
         </a>`;
     }
 
-    if(!buttonsHtml) buttonsHtml = `<p class="col-span-3 text-center text-sm text-gray-400">Sin métodos de contacto.</p>`;
+    const shareUrl = window.location.origin + window.location.pathname + '?id=' + biz.id;
+    buttonsHtml += `
+    <button onclick="shareProfile('${shareUrl}')" class="flex flex-col items-center justify-center p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition border border-gray-200">
+        <i class="fas fa-share-alt text-2xl mb-1"></i>
+        <span class="text-xs font-bold">Compartir</span>
+    </button>`;
 
     btnContainer.innerHTML = buttonsHtml;
 
@@ -202,10 +252,52 @@ function openBusinessModal(biz) {
     document.body.style.overflow = 'hidden'; 
 }
 
+window.shareProfile = async (url) => {
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Mirá este emprendimiento en Ubify',
+                text: 'Encontré este lugar genial en Villa Ángela:',
+                url: url
+            });
+        } catch (err) {
+            console.log('Error compartiendo:', err);
+        }
+    } else {
+        try {
+            await navigator.clipboard.writeText(url);
+            showToast("¡Link copiado! Listo para compartir 🚀");
+        } catch (err) {
+            alert("No se pudo copiar el enlace.");
+        }
+    }
+}
+
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-[100] animate-fade-in flex items-center gap-2 text-sm font-medium';
+    toast.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${message}`;
+    
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 function closeModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = ''; 
     document.getElementById('modalMap').src = ''; 
+    
+    const url = new URL(window.location);
+    url.searchParams.delete('id');
+    window.history.replaceState({}, '', url);
 }
 
 closeModalBtn.addEventListener('click', closeModal);
@@ -214,12 +306,11 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
 });
 
-// BUSCADOR INTELIGENTE CON SINÓNIMOS
+// Filtros
 function filterBusinesses() {
   const searchTerm = document.getElementById('searchBusiness').value.toLowerCase().trim();
   const categoryValue = document.getElementById('categoryFilter').value;
 
-  // Diccionario de sinónimos
   const synonyms = {
       'comida': 'gastronomía', 'almuerzo': 'gastronomía', 'cena': 'gastronomía',
       'bebidas': 'gastronomía', 'tragos': 'gastronomía', 'hamburguesa': 'gastronomía',
@@ -258,18 +349,20 @@ function filterBusinesses() {
   renderBusinesses(filtered);
 }
 
-// Iconos
 function getCategoryIcon(cat) {
     const icons = {
-        'Gastronomía': '🍔',
-        'Indumentaria': '👗',
-        'Accesorios': '💍',
-        'Tecnología': '💻',
-        'Servicios': '🛠️',
-        'Hogar': '🏠',
-        'Belleza': '💅'
+        'Gastronomía': '🍔', 'Indumentaria': '👗', 'Accesorios': '💍',
+        'Tecnología': '💻', 'Servicios': '🛠️', 'Hogar': '🏠', 'Belleza': '💅'
     };
     return icons[cat] || '✨';
+}
+
+function getTagIcon(tag) {
+    const icons = {
+        'Delivery': '🛵', 'Tarjetas': '💳', 'WiFi': '📶',
+        'Pet Friendly': '🐶', 'Aire Acond.': '❄️'
+    };
+    return icons[tag] || '•';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
