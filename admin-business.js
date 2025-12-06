@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Tu configuración de Firebase
+// Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC0iRq9z-KJxjnX_4CpjEZrwvX0hjvPb1w",
   authDomain: "ubify-598fe.firebaseapp.com",
@@ -14,17 +14,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Referencias al DOM
 const businessForm = document.getElementById('businessForm');
 const adminTableBody = document.getElementById('adminTableBody');
 const loadingText = document.getElementById('loadingText');
 const submitBtn = document.getElementById('submitBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
 
-// Variable para controlar si estamos editando
 let editId = null;
 
-// 1. CARGAR DATOS AL INICIAR
+// 1. CARGAR DATOS
 async function loadAdminTable() {
     adminTableBody.innerHTML = '';
     loadingText.style.display = 'block';
@@ -68,7 +66,6 @@ async function loadAdminTable() {
 
         loadingText.style.display = 'none';
         
-        // Asignar eventos a botones generados dinámicamente
         document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDelete));
         document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEdit));
 
@@ -78,22 +75,24 @@ async function loadAdminTable() {
     }
 }
 
-// 2. GUARDAR (CREAR O ACTUALIZAR)
+// 2. GUARDAR
 businessForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Obtener valores
+    // Obtener etiquetas seleccionadas
+    const etiquetas = Array.from(document.querySelectorAll('input[name="etiquetas"]:checked')).map(cb => cb.value);
+
     const businessData = {
         nombre: document.getElementById('nombre').value,
         categoria: document.getElementById('categoria').value,
         telefono: document.getElementById('telefono').value,
         ubicacion: document.getElementById('ubicacion').value,
-        // GUARDAMOS EL MAPA PERSONALIZADO
         mapUrl: document.getElementById('mapUrl').value,
         instagram: document.getElementById('instagram').value,
         web: document.getElementById('web').value,
         imagen: document.getElementById('imagen').value,
         descripcion: document.getElementById('descripcion').value,
+        tags: etiquetas, // GUARDAMOS LAS ETIQUETAS
         updatedAt: new Date()
     };
 
@@ -101,25 +100,21 @@ businessForm.addEventListener('submit', async (e) => {
         businessData.createdAt = new Date();
     }
 
-    const originalText = submitBtn.innerText;
     submitBtn.disabled = true;
     submitBtn.innerText = editId ? "Actualizando..." : "Guardando...";
 
     try {
         if (editId) {
-            // MODO EDICIÓN
             const docRef = doc(db, "emprendimientos", editId);
             await updateDoc(docRef, businessData);
             alert("✅ Emprendimiento actualizado correctamente");
             resetForm(); 
         } else {
-            // MODO CREACIÓN
             await addDoc(collection(db, "emprendimientos"), businessData);
             alert("✅ Emprendimiento creado con éxito");
             businessForm.reset();
         }
-        
-        loadAdminTable(); // Recargar tabla
+        loadAdminTable();
     } catch (error) {
         console.error("Error al guardar:", error);
         alert("❌ Error: " + error.message);
@@ -129,10 +124,9 @@ businessForm.addEventListener('submit', async (e) => {
     }
 });
 
-// 3. PREPARAR EDICIÓN
+// 3. EDITAR
 async function handleEdit(e) {
     const id = e.target.getAttribute('data-id');
-    
     submitBtn.innerText = "Cargando datos...";
     submitBtn.disabled = true;
 
@@ -143,26 +137,33 @@ async function handleEdit(e) {
         if (docSnap.exists()) {
             const data = docSnap.data();
             
-            // Rellenar formulario
             document.getElementById('nombre').value = data.nombre || '';
             document.getElementById('categoria').value = data.categoria || 'Gastronomía';
             document.getElementById('telefono').value = data.telefono || '';
             document.getElementById('ubicacion').value = data.ubicacion || '';
-            // RECUPERAR MAPA
             document.getElementById('mapUrl').value = data.mapUrl || '';
             document.getElementById('instagram').value = data.instagram || '';
             document.getElementById('web').value = data.web || '';
             document.getElementById('imagen').value = data.imagen || '';
             document.getElementById('descripcion').value = data.descripcion || '';
 
-            // Configurar estado de edición
+            // RECUPERAR ETIQUETAS Y MARCAR CHECKBOXES
+            const checkboxes = document.querySelectorAll('input[name="etiquetas"]');
+            checkboxes.forEach(cb => cb.checked = false); // Limpiar primero
+            
+            if (data.tags && Array.isArray(data.tags)) {
+                data.tags.forEach(tag => {
+                    const cb = document.querySelector(`input[name="etiquetas"][value="${tag}"]`);
+                    if (cb) cb.checked = true;
+                });
+            }
+
             editId = id;
             submitBtn.innerText = "Actualizar Emprendimiento";
             submitBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             submitBtn.classList.add('bg-amber-600', 'hover:bg-amber-700'); 
             
             cancelEditBtn.classList.remove('hidden'); 
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             alert("El documento no existe.");
@@ -175,24 +176,21 @@ async function handleEdit(e) {
     }
 }
 
-// 4. CANCELAR EDICIÓN
+// 4. CANCELAR
 cancelEditBtn.addEventListener('click', resetForm);
 
 function resetForm() {
     editId = null;
     businessForm.reset();
-    
     submitBtn.innerText = "Guardar Emprendimiento";
     submitBtn.classList.remove('bg-amber-600', 'hover:bg-amber-700');
     submitBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-    
     cancelEditBtn.classList.add('hidden');
 }
 
 // 5. ELIMINAR
 async function handleDelete(e) {
     const id = e.target.getAttribute('data-id');
-    
     if (confirm("¿Estás seguro de eliminar este emprendimiento?")) {
         try {
             await deleteDoc(doc(db, "emprendimientos", id));
