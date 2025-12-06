@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC0iRq9z-KJxjnX_4CpjEZrwvX0hjvPb1w",
   authDomain: "ubify-598fe.firebaseapp.com",
@@ -22,7 +21,6 @@ const cancelEditBtn = document.getElementById('cancelEditBtn');
 
 let editId = null;
 
-// 1. CARGAR DATOS
 async function loadAdminTable() {
     adminTableBody.innerHTML = '';
     loadingText.style.display = 'block';
@@ -75,11 +73,10 @@ async function loadAdminTable() {
     }
 }
 
-// 2. GUARDAR
 businessForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Obtener etiquetas seleccionadas
+    // Obtener etiquetas
     const etiquetas = Array.from(document.querySelectorAll('input[name="etiquetas"]:checked')).map(cb => cb.value);
 
     const businessData = {
@@ -92,7 +89,7 @@ businessForm.addEventListener('submit', async (e) => {
         web: document.getElementById('web').value,
         imagen: document.getElementById('imagen').value,
         descripcion: document.getElementById('descripcion').value,
-        tags: etiquetas, // GUARDAMOS LAS ETIQUETAS
+        tags: etiquetas,
         updatedAt: new Date()
     };
 
@@ -124,7 +121,6 @@ businessForm.addEventListener('submit', async (e) => {
     }
 });
 
-// 3. EDITAR
 async function handleEdit(e) {
     const id = e.target.getAttribute('data-id');
     submitBtn.innerText = "Cargando datos...";
@@ -147,9 +143,8 @@ async function handleEdit(e) {
             document.getElementById('imagen').value = data.imagen || '';
             document.getElementById('descripcion').value = data.descripcion || '';
 
-            // RECUPERAR ETIQUETAS Y MARCAR CHECKBOXES
             const checkboxes = document.querySelectorAll('input[name="etiquetas"]');
-            checkboxes.forEach(cb => cb.checked = false); // Limpiar primero
+            checkboxes.forEach(cb => cb.checked = false);
             
             if (data.tags && Array.isArray(data.tags)) {
                 data.tags.forEach(tag => {
@@ -176,7 +171,6 @@ async function handleEdit(e) {
     }
 }
 
-// 4. CANCELAR
 cancelEditBtn.addEventListener('click', resetForm);
 
 function resetForm() {
@@ -188,7 +182,6 @@ function resetForm() {
     cancelEditBtn.classList.add('hidden');
 }
 
-// 5. ELIMINAR
 async function handleDelete(e) {
     const id = e.target.getAttribute('data-id');
     if (confirm("¿Estás seguro de eliminar este emprendimiento?")) {
