@@ -39,7 +39,7 @@ async function loadBusinesses() {
     
     renderBusinesses(allBusinesses);
 
-    // Detección de Link Compartido
+    // --- DETECTAR ID COMPARTIDO ---
     const urlParams = new URLSearchParams(window.location.search);
     const sharedId = urlParams.get('id');
     
@@ -91,7 +91,7 @@ function renderBusinesses(businesses) {
         });
     }
 
-    // Lógica de Ubicación en Card
+    // Texto ubicación
     let locationText = biz.ubicacion;
     if (!biz.ubicacion || biz.ubicacion.trim() === '') {
         locationText = "Solo Delivery / A coordinar";
@@ -180,13 +180,12 @@ function openBusinessModal(biz) {
     modalImg.src = imageSrc;
     modalImg.className = "w-full h-full object-contain p-4 bg-gray-100";
 
-    // --- LÓGICA MAPA INTELIGENTE ---
+    // --- MAPA GOOGLE ---
     const iframeMap = document.getElementById('modalMap');
     const loadingOverlay = document.getElementById('mapLoadingOverlay');
     const mapContainer = document.getElementById('modalMapContainer');
 
     if (hasLocation) {
-        // SI TIENE UBICACIÓN: MOSTRAR MAPA
         mapContainer.classList.remove('hidden');
         loadingOverlay.classList.remove('hidden');
         iframeMap.src = ''; 
@@ -204,10 +203,9 @@ function openBusinessModal(biz) {
         };
         iframeMap.src = mapUrlStr;
     } else {
-        // SI NO TIENE UBICACIÓN: OCULTAR MAPA COMPLETO
         mapContainer.classList.add('hidden');
     }
-    // -------------------------------
+    // -------------------
 
     // Botones
     const btnContainer = document.getElementById('modalButtons');
@@ -239,6 +237,7 @@ function openBusinessModal(biz) {
         </a>`;
     }
 
+    // Botón Compartir
     const shareUrl = window.location.origin + window.location.pathname + '?id=' + biz.id;
     buttonsHtml += `
     <button onclick="shareProfile('${shareUrl}')" class="flex flex-col items-center justify-center p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition border border-gray-200">
@@ -252,6 +251,7 @@ function openBusinessModal(biz) {
     document.body.style.overflow = 'hidden'; 
 }
 
+// Función COMPARTIR estable (sin toast, solo alerta nativa o alert simple)
 window.shareProfile = async (url) => {
     if (navigator.share) {
         try {
@@ -266,28 +266,11 @@ window.shareProfile = async (url) => {
     } else {
         try {
             await navigator.clipboard.writeText(url);
-            showToast("¡Link copiado! Listo para compartir 🚀");
+            alert("¡Enlace copiado! Ya puedes pegarlo en WhatsApp o redes.");
         } catch (err) {
             alert("No se pudo copiar el enlace.");
         }
     }
-}
-
-function showToast(message) {
-    const existing = document.querySelector('.toast-notification');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.className = 'toast-notification fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-[100] animate-fade-in flex items-center gap-2 text-sm font-medium';
-    toast.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${message}`;
-    
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translate(-50%, 20px)';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
 }
 
 function closeModal() {
