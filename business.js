@@ -91,7 +91,7 @@ function renderBusinesses(businesses) {
         });
     }
 
-    // Texto ubicación
+    // Ubicación texto
     let locationText = biz.ubicacion;
     if (!biz.ubicacion || biz.ubicacion.trim() === '') {
         locationText = "Solo Delivery / A coordinar";
@@ -155,8 +155,6 @@ function renderBusinesses(businesses) {
 // Función Modal
 function openBusinessModal(biz) {
     const imageSrc = biz.imagen || 'https://via.placeholder.com/600x400';
-    
-    // Si no tiene ubicación, mostramos mensaje especial
     const hasLocation = (biz.ubicacion && biz.ubicacion.trim() !== '');
     const address = hasLocation ? biz.ubicacion : 'Solo Delivery / A coordinar';
     
@@ -180,7 +178,7 @@ function openBusinessModal(biz) {
     modalImg.src = imageSrc;
     modalImg.className = "w-full h-full object-contain p-4 bg-gray-100";
 
-    // --- MAPA GOOGLE ---
+    // Mapa
     const iframeMap = document.getElementById('modalMap');
     const loadingOverlay = document.getElementById('mapLoadingOverlay');
     const mapContainer = document.getElementById('modalMapContainer');
@@ -205,7 +203,6 @@ function openBusinessModal(biz) {
     } else {
         mapContainer.classList.add('hidden');
     }
-    // -------------------
 
     // Botones
     const btnContainer = document.getElementById('modalButtons');
@@ -251,7 +248,7 @@ function openBusinessModal(biz) {
     document.body.style.overflow = 'hidden'; 
 }
 
-// Función COMPARTIR estable (sin toast, solo alerta nativa o alert simple)
+// --- FUNCIÓN COMPARTIR CON TOAST (Restaurada) ---
 window.shareProfile = async (url) => {
     if (navigator.share) {
         try {
@@ -264,13 +261,39 @@ window.shareProfile = async (url) => {
             console.log('Error compartiendo:', err);
         }
     } else {
+        // Copiar al portapapeles
         try {
             await navigator.clipboard.writeText(url);
-            alert("¡Enlace copiado! Ya puedes pegarlo en WhatsApp o redes.");
+            showToast("¡Link copiado! Compartilo 🚀");
         } catch (err) {
-            alert("No se pudo copiar el enlace.");
+            // Fallback manual si clipboard API falla
+            const textArea = document.createElement("textarea");
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            showToast("¡Link copiado! Compartilo 🚀");
         }
     }
+}
+
+// Función para mostrar el Toast Visual
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-[100] animate-fade-in flex items-center gap-2 text-sm font-medium';
+    toast.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${message}`;
+    
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
 function closeModal() {
