@@ -13,7 +13,12 @@
   <div class="max-w-4xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold text-gray-800">Panel de Emprendimientos</h1>
-      <a href="emprendimientos.html" class="text-blue-600 hover:underline">Ver web pública &rarr;</a>
+      <div class="flex gap-4">
+          <button id="openConfigBtn" class="text-gray-600 hover:text-gray-900 font-medium flex items-center gap-1 bg-white px-4 py-2 rounded-lg border hover:bg-gray-50 transition">
+            ⚙️ Categorías y Tags
+          </button>
+          <a href="emprendimientos.html" class="text-blue-600 hover:underline flex items-center">Ver web pública &rarr;</a>
+      </div>
     </div>
 
     <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
@@ -29,15 +34,8 @@
 
         <div class="col-span-2 md:col-span-1">
           <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-          <select id="categoria" required 
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-            <option value="Gastronomía">Gastronomía</option>
-            <option value="Indumentaria">Indumentaria</option>
-            <option value="Accesorios">Accesorios</option>
-            <option value="Belleza">Belleza y Salud</option>
-            <option value="Hogar">Hogar y Deco</option>
-            <option value="Servicios">Servicios</option>
-            <option value="Tecnología">Tecnología</option>
+          <select id="categoria" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="">Cargando categorías...</option>
           </select>
         </div>
 
@@ -60,29 +58,17 @@
           <p class="text-xs text-gray-500 mt-1">Si la dirección automática falla, ve a Google Maps -> Compartir -> Insertar mapa -> Copia lo que está dentro de src="..." y pégalo aquí.</p>
         </div>
 
+        <div class="col-span-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
+           <label class="inline-flex items-center cursor-pointer select-none">
+             <input type="checkbox" id="mostrarMapa" class="form-checkbox text-blue-600 h-5 w-5 rounded focus:ring-blue-500" checked>
+             <span class="ml-2 text-gray-800 font-semibold">📍 Mostrar mapa en el perfil público</span>
+           </label>
+        </div>
+
         <div class="col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
             <label class="block text-sm font-bold text-gray-700 mb-3">Etiquetas y Servicios Adicionales</label>
-            <div class="flex flex-wrap gap-4">
-                <label class="inline-flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="etiquetas" value="Delivery" class="form-checkbox text-blue-600 h-5 w-5 rounded">
-                    <span>🛵 Delivery</span>
-                </label>
-                <label class="inline-flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="etiquetas" value="Tarjetas" class="form-checkbox text-blue-600 h-5 w-5 rounded">
-                    <span>💳 Recibe Tarjetas</span>
-                </label>
-                <label class="inline-flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="etiquetas" value="WiFi" class="form-checkbox text-blue-600 h-5 w-5 rounded">
-                    <span>📶 WiFi Clientes</span>
-                </label>
-                <label class="inline-flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="etiquetas" value="Pet Friendly" class="form-checkbox text-blue-600 h-5 w-5 rounded">
-                    <span>🐶 Pet Friendly</span>
-                </label>
-                <label class="inline-flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="etiquetas" value="Aire Acond." class="form-checkbox text-blue-600 h-5 w-5 rounded">
-                    <span>❄️ Aire Acond.</span>
-                </label>
+            <div id="tagsContainer" class="flex flex-wrap gap-4">
+                <p class="text-sm text-gray-400">Cargando etiquetas...</p>
             </div>
         </div>
 
@@ -99,10 +85,23 @@
         </div>
 
         <div class="col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">URL de la Imagen</label>
-          <input type="url" id="imagen" required placeholder="https://..." 
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-          <p class="text-xs text-gray-500 mt-1">Tip: Copia la dirección de imagen de Instagram o sube la foto a un host gratuito.</p>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Logo del Emprendimiento</label>
+          <input type="hidden" id="imagenUrl">
+          <div class="relative overflow-hidden inline-block w-full">
+            <label for="imagenFile" class="flex items-center justify-center w-full p-4 bg-white border-2 border-dashed border-blue-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400 mr-2 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span id="btnUploadText" class="text-sm text-gray-600 font-medium group-hover:text-blue-700">Click para subir logo</span>
+            </label>
+            <input type="file" id="imagenFile" accept="image/*" class="hidden">
+          </div>
+          <div id="uploadLoader" class="hidden mt-3 flex items-center justify-center text-sm text-blue-600 bg-blue-50 p-2 rounded">
+             Subiendo imagen...
+          </div>
+          <div id="imagePreviewContainer" class="mt-4 hidden bg-gray-50 p-2 rounded border border-gray-200 text-center">
+             <img src="" id="previewImg" class="h-24 w-24 mx-auto object-contain border rounded bg-white p-1 shadow-sm">
+          </div>
         </div>
 
         <div class="col-span-2">
@@ -127,7 +126,6 @@
 
     <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
       <h2 class="text-xl font-semibold mb-4 text-gray-700">Administrar Existentes</h2>
-      
       <div class="overflow-x-auto">
         <table class="min-w-full text-left text-sm">
           <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
@@ -138,12 +136,43 @@
               <th class="px-4 py-3 text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody id="adminTableBody" class="divide-y divide-gray-100">
-            </tbody>
+          <tbody id="adminTableBody" class="divide-y divide-gray-100"></tbody>
         </table>
       </div>
       <p id="loadingText" class="text-center text-gray-500 py-4">Cargando datos...</p>
     </div>
+  </div>
+
+  <div id="configModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+          <button id="closeConfigBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          
+          <h2 class="text-2xl font-bold mb-6 text-gray-800">⚙️ Configuración Global</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                  <h3 class="font-bold text-gray-700 mb-2 border-b pb-2">Categorías</h3>
+                  <div class="flex gap-2 mb-3">
+                      <input type="text" id="newCatInput" placeholder="Nueva categoría..." class="flex-1 border rounded px-2 py-1 text-sm">
+                      <button id="addCatBtn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">+</button>
+                  </div>
+                  <ul id="catList" class="space-y-2 max-h-60 overflow-y-auto bg-gray-50 p-2 rounded">
+                      </ul>
+              </div>
+
+              <div>
+                  <h3 class="font-bold text-gray-700 mb-2 border-b pb-2">Etiquetas / Servicios</h3>
+                  <div class="flex gap-2 mb-3">
+                      <input type="text" id="newTagInput" placeholder="Nuevo tag..." class="flex-1 border rounded px-2 py-1 text-sm">
+                      <button id="addTagBtn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">+</button>
+                  </div>
+                  <ul id="tagList" class="space-y-2 max-h-60 overflow-y-auto bg-gray-50 p-2 rounded">
+                      </ul>
+              </div>
+          </div>
+      </div>
   </div>
 
   <script type="module" src="admin-business.js"></script>
