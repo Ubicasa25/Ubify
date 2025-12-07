@@ -26,6 +26,12 @@
 
     .animate-fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .modal-enter { animation: modalEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes modalEnter {
+        from { opacity: 0; transform: scale(0.95) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
   </style>
 </head>
 <body class="text-gray-800 flex flex-col min-h-screen">
@@ -58,7 +64,6 @@
       </p>
 
       <div class="bg-white p-1.5 sm:p-2 rounded-xl sm:rounded-2xl shadow-xl max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2">
-        
         <div class="sm:col-span-2 relative border-b sm:border-b-0 sm:border-r border-gray-100">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,19 +79,11 @@
             <select id="categoryFilter" 
               class="block w-full pl-3 pr-10 py-2.5 sm:py-3 border-none rounded-xl leading-5 bg-transparent focus:outline-none focus:ring-0 text-gray-900 font-medium cursor-pointer hover:bg-gray-50 transition-colors text-sm sm:text-base">
               <option value="">Todas las categorías</option>
-              <option value="Gastronomía">Gastronomía</option>
-              <option value="Indumentaria">Indumentaria</option>
-              <option value="Accesorios">Accesorios</option>
-              <option value="Servicios">Servicios</option>
-              <option value="Tecnología">Tecnología</option>
-              <option value="Hogar">Hogar</option>
-              <option value="Belleza">Belleza</option>
             </select>
         </div>
       </div>
 
       <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style="animation-delay: 0.2s;">
-        
         <a href="publicar-emprendimiento.html" 
            class="inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-full shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative z-30">
            Publicar GRATIS
@@ -96,7 +93,6 @@
            class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white border-2 border-white/30 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 hover:border-white/50 transition-all duration-300 cursor-pointer relative z-30">
            Ver Emprendimientos
         </button>
-
       </div>
     </div>
   </header>
@@ -112,7 +108,7 @@
     </div>
 
     <div id="businessContainer" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 hidden">
-      </div>
+    </div>
 
     <div id="noResults" class="hidden text-center py-12 sm:py-20 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100">
       <div class="bg-gray-50 w-16 h-16 sm:w-24 sm:h-24 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -127,6 +123,21 @@
       </button>
     </div>
 
+    <button id="scrollTopBtn" class="fixed bottom-20 right-4 z-30 bg-white/90 backdrop-blur-sm text-gray-600 p-3 rounded-full shadow-md hover:shadow-lg border border-gray-200 transition-all duration-300 hidden hover:-translate-y-1 focus:outline-none hover:bg-gray-50 hover:text-blue-600" aria-label="Volver arriba">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+
+    <button id="openFavoritesBtn" class="fixed bottom-4 right-4 z-40 bg-white text-gray-800 p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group border border-gray-200 flex items-center gap-2">
+      <div class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span id="favCounterBadge" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full hidden shadow-sm border border-white">0</span>
+      </div>
+      <span class="font-bold text-gray-700 hidden sm:inline text-sm">Favoritos</span>
+    </button>
   </main>
 
   <footer id="mainFooter" class="bg-gray-100 py-8 sm:py-10 px-3 sm:px-4 border-t border-gray-200 mt-auto hidden">
@@ -172,59 +183,90 @@
     <p class="text-center text-gray-500 mt-2 text-xs sm:text-sm font-inter">© 2025 Ubify - Diseñado y desarrollado por Hostara.</p>
   </footer>
 
-  <div id="detailModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div id="favoritesModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" id="favBackdrop"></div>
+    <div class="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+      
+      <div class="w-full sm:max-w-4xl bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto max-h-[80vh] sm:max-h-[85vh] modal-enter relative z-[101]">
+        
+        <div class="px-5 py-3 border-b border-gray-100 flex justify-between items-center bg-white shrink-0 sticky top-0 z-10">
+          <div class="flex items-center gap-2">
+            <div class="bg-red-50 p-1.5 rounded-full">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-800">Mis favoritos</h3>
+          </div>
+          
+          <button id="closeFavBtn" class="bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-800 p-2 rounded-full transition-colors focus:outline-none">
+            <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <div class="p-3 sm:p-6 overflow-y-auto bg-gray-50 flex-1 relative">
+          <div id="favoritesContainer" class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+             </div>
+          
+          <div id="emptyFavorites" class="hidden flex flex-col items-center justify-center py-10 text-center h-full">
+             <div class="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+             </div>
+             <h4 class="text-base font-bold text-gray-800 mb-1">Tu lista está vacía</h4>
+             <p class="text-xs text-gray-500 max-w-xs">Guarda los emprendimientos que te gusten.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="detailModal" class="fixed inset-0 z-[110] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="fixed inset-0 bg-black/70 transition-opacity" id="modalBackdrop"></div>
 
     <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-      <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+      <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl relative z-[111] w-full max-w-lg">
         
-        <div class="relative h-64 sm:h-72">
+        <div class="relative h-48 sm:h-72">
           <img id="modalImg" src="" alt="Detalle" class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <button id="closeModalBtn" class="absolute top-4 right-4 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button id="closeModalBtn" class="absolute top-3 right-3 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
           
-          <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white">
-            <span id="modalCategory" class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-2 inline-block shadow-sm">
+          <div class="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 text-white text-left">
+            <span id="modalCategory" class="bg-blue-600 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wide mb-1 sm:mb-2 inline-block shadow-sm">
               Categoría
             </span>
-            <h3 id="modalTitle" class="text-2xl sm:text-3xl font-bold leading-tight">
-              Nombre Emprendimiento
+            <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold leading-tight">
+              Nombre
             </h3>
           </div>
         </div>
 
-        <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-          <div class="flex items-center text-gray-600 mb-4">
-            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="px-4 pb-4 pt-4 sm:p-6 sm:pb-4">
+          <div class="flex items-center text-gray-600 mb-3 sm:mb-4 text-sm">
+            <svg class="w-4 h-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
-            <span id="modalLocation" class="font-medium">Ubicación</span>
+            <span id="modalLocation" class="font-medium truncate">Ubicación</span>
           </div>
 
-          <div class="prose prose-sm max-w-none text-gray-600 mb-6">
+          <div class="prose prose-sm max-w-none text-gray-600 mb-5 text-sm">
             <p id="modalDesc" class="whitespace-pre-line leading-relaxed">
               Descripción...
             </p>
           </div>
 
-          <div id="modalMapContainer" class="w-full h-56 bg-gray-100 rounded-xl overflow-hidden mb-6 border border-gray-200 shadow-inner relative isolate">
+          <div id="modalMapContainer" class="w-full h-40 sm:h-56 bg-gray-100 rounded-xl overflow-hidden mb-5 border border-gray-200 shadow-inner relative isolate hidden">
              <iframe id="modalMap" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="relative z-10"></iframe>
-             
              <div id="mapLoadingOverlay" class="absolute inset-0 flex items-center justify-center bg-gray-100 z-0">
-                <p class="text-gray-400 text-xs flex items-center">
-                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  Cargando mapa...
-                </p>
+                <p class="text-gray-400 text-xs flex items-center">Cargando...</p>
              </div>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="modalButtons">
-            </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="modalButtons">
+          </div>
         </div>
       </div>
     </div>
