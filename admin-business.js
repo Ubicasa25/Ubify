@@ -80,8 +80,6 @@ async function loadConfiguration() {
 }
 
 function renderFormOptions(cats, tags) {
-    // Categorias
-    // Guardar selección actual por si se recarga al editar
     const currentVal = categoriaSelect.value;
     categoriaSelect.innerHTML = '<option value="">Seleccionar Categoría</option>';
     cats.sort().forEach(cat => {
@@ -92,8 +90,6 @@ function renderFormOptions(cats, tags) {
     });
     if(currentVal) categoriaSelect.value = currentVal;
 
-    // Tags (Solo re-renderizamos si no estamos editando para no perder checks, o manejamos con cuidado)
-    // Para simplificar, limpiamos y recreamos. Si estás editando un negocio, handleEdit volverá a marcar los checks.
     tagsContainer.innerHTML = '';
     tags.forEach(tag => {
         const label = document.createElement('label');
@@ -107,7 +103,6 @@ function renderFormOptions(cats, tags) {
 }
 
 function renderConfigModalLists(cats, tags) {
-    // Lista Categorías Admin
     catList.innerHTML = '';
     cats.sort().forEach(cat => {
         const li = document.createElement('li');
@@ -122,7 +117,6 @@ function renderConfigModalLists(cats, tags) {
         catList.appendChild(li);
     });
 
-    // Lista Tags Admin
     tagList.innerHTML = '';
     tags.forEach(tag => {
         const li = document.createElement('li');
@@ -156,7 +150,6 @@ window.removeConfigItem = async function(field, value) {
     } catch(e) { console.error(e); alert("Error al eliminar"); }
 }
 
-// --- FUNCIÓN EDITAR (NUEVA) ---
 window.editConfigItem = async function(field, oldValue) {
     const newValue = prompt(`Editar nombre de ${field === 'categorias' ? 'categoría' : 'etiqueta'}:`, oldValue);
     
@@ -173,21 +166,17 @@ window.editConfigItem = async function(field, oldValue) {
         const data = docSnap.data();
         let list = data[field] || [];
         
-        // Verificar si ya existe
         if (list.includes(trimmedNew)) {
             alert("¡Ese nombre ya existe!");
             return;
         }
 
-        // Reemplazar en el array localmente
         const index = list.indexOf(oldValue);
         if (index !== -1) {
             list[index] = trimmedNew;
             
-            // 1. Actualizar la lista en Configuración
             await updateDoc(configRef, { [field]: list });
             
-            // 2. Si es una CATEGORÍA, actualizar todos los emprendimientos que la usen
             if (field === 'categorias') {
                 const q = query(collection(db, "emprendimientos"), where("categoria", "==", oldValue));
                 const querySnapshot = await getDocs(q);
@@ -198,14 +187,11 @@ window.editConfigItem = async function(field, oldValue) {
                         batch.update(doc.ref, { categoria: trimmedNew });
                     });
                     await batch.commit();
-                    console.log(`Se actualizaron ${querySnapshot.size} emprendimientos con la nueva categoría.`);
                 }
             }
-            // (Opcional: Para tags es más complejo porque es un array, por ahora solo actualizamos la lista maestra)
 
             alert("✅ Editado correctamente");
             loadConfiguration();
-            // Recargar tabla admin para ver cambios de categoría si los hubo
             if (field === 'categorias') loadAdminTable(); 
         }
 
@@ -223,7 +209,21 @@ addCatBtn.addEventListener('click', () => { addConfigItem('categorias', newCatIn
 addTagBtn.addEventListener('click', () => { addConfigItem('tags', newTagInput.value); newTagInput.value = ''; });
 
 
-// --- 2. LÓGICA DE SUBIDA DE IMAGEN ---
+// --- 2. LÓGICA DE IMAGEN (SUBIDA Y URL) ---
+
+// a) Si el usuario escribe una URL manualmente
+imagenUrlInput.addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    if (url) {
+        previewImg.src = url;
+        imagePreviewContainer.classList.remove('hidden');
+        btnUploadText.textContent = "Elegir otro archivo";
+    } else {
+        imagePreviewContainer.classList.add('hidden');
+    }
+});
+
+// b) Función subir a ImgBB
 async function subirImagen(archivo) {
     const formData = new FormData();
     formData.append("image", archivo);
@@ -238,6 +238,7 @@ async function subirImagen(archivo) {
     }
 }
 
+// c) Listener para input tipo File
 imagenFileInput.addEventListener("change", async (e) => {
     const archivos = Array.from(e.target.files);
     if (!archivos.length) return;
@@ -249,10 +250,11 @@ imagenFileInput.addEventListener("change", async (e) => {
 
     try {
         const url = await subirImagen(archivos[0]);
-        imagenUrlInput.value = url;
+        // Ponemos la URL generada en el campo de texto visible
+        imagenUrlInput.value = url; 
         previewImg.src = url;
         imagePreviewContainer.classList.remove("hidden");
-        btnUploadText.textContent = "Cambiar logo";
+        btnUploadText.textContent = "¡Subida! (Cambiar)";
     } catch (err) {
         alert("Error al subir la imagen. Intenta de nuevo.");
         btnUploadText.textContent = "Error. Reintentar";
@@ -321,10 +323,12 @@ businessForm.addEventListener('submit', async (e) => {
     
     const etiquetas = Array.from(document.querySelectorAll('input[name="etiquetas"]:checked')).map(cb => cb.value);
     const mostrarMapa = document.getElementById('mostrarMapa').checked;
-    const imagenUrl = imagenUrlInput.value;
+    
+    // Obtenemos la URL directamente del campo de texto
+    const imagenUrl = imagenUrlInput.value.trim();
 
     if (!imagenUrl) {
-        alert("Por favor sube una imagen del logo.");
+        alert("Por favor sube una imagen o pega una URL válida.");
         return;
     }
 
@@ -385,9 +389,7 @@ async function handleEdit(e) {
             
             document.getElementById('nombre').value = data.nombre || '';
             
-            // Manejo seguro de categoría (por si se borró la que tenía)
             const currentCat = data.categoria;
-            // Si la categoría no está en el select, la agregamos temporalmente para que se vea
             let optionExists = false;
             for (let i = 0; i < categoriaSelect.options.length; i++) {
                 if (categoriaSelect.options[i].value === currentCat) {
@@ -419,7 +421,7 @@ async function handleEdit(e) {
             } else {
                 imagenUrlInput.value = '';
                 imagePreviewContainer.classList.add('hidden');
-                btnUploadText.textContent = "Click para subir logo";
+                btnUploadText.textContent = "Elegir archivo";
             }
 
             const checkboxes = document.querySelectorAll('input[name="etiquetas"]');
@@ -460,7 +462,7 @@ function resetForm() {
     imagenUrlInput.value = '';
     imagePreviewContainer.classList.add('hidden');
     previewImg.src = '';
-    btnUploadText.textContent = "Click para subir logo";
+    btnUploadText.textContent = "Elegir archivo";
     imagenFileInput.value = ''; 
 
     submitBtn.innerText = "Guardar Emprendimiento";
