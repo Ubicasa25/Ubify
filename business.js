@@ -15,6 +15,7 @@ const db = getFirestore(app);
 
 let allBusinesses = [];
 let favoriteIds = JSON.parse(localStorage.getItem('ubify_fav_businesses')) || [];
+let deletedFavCount = 0; // Variable para recordar cuántos se borraron
 const categoryFilterSelect = document.getElementById('categoryFilter');
 
 // --- Elementos DOM ---
@@ -74,11 +75,34 @@ async function loadBusinesses() {
       ...doc.data()
     }));
 
+    // --- INICIO LÓGICA DE LIMPIEZA SILENCIOSA ---
+    // 1. Obtenemos una lista con solo los IDs que realmente existen en la BD
+    const existingIds = allBusinesses.map(b => b.id);
+
+    // 2. Identificamos cuáles IDs tiene el usuario que YA NO existen en la BD
+    const deletedIds = favoriteIds.filter(id => !existingIds.includes(id));
+
+    // 3. Filtramos el array: nos quedamos solo con los que sí existen
+    const cleanFavorites = favoriteIds.filter(id => existingIds.includes(id));
+
+    // 4. Si hubo cambios, actualizamos localStorage PERO NO MOSTRAMOS ALERTA AÚN
+    if (favoriteIds.length !== cleanFavorites.length) {
+        // Guardamos la cantidad para mostrarla luego al abrir favoritos
+        deletedFavCount = deletedIds.length;
+        
+        // Actualizamos la lista y localStorage
+        favoriteIds = cleanFavorites;
+        localStorage.setItem('ubify_fav_businesses', JSON.stringify(favoriteIds));
+        
+        console.log(`Limpieza silenciosa: Se detectaron ${deletedFavCount} favoritos eliminados.`);
+    }
+    // --- FIN LÓGICA DE LIMPIEZA ---
+
     loader.classList.add('hidden');
     container.classList.remove('hidden');
     
     renderBusinesses(allBusinesses);
-    updateFavCounter();
+    updateFavCounter(); // Actualiza el contador con el número real
 
     const urlParams = new URLSearchParams(window.location.search);
     const sharedParam = urlParams.get('id'); 
@@ -202,7 +226,25 @@ function renderFavoritesList() {
     favBusinesses.forEach(biz => { const card = createCardHTML(biz); favoritesContainer.appendChild(card); });
 }
 
-openFavoritesBtn.addEventListener('click', () => { renderFavoritesList(); favModal.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); });
+// --- MODIFICACIÓN DEL EVENTO CLICK EN FAVORITOS ---
+openFavoritesBtn.addEventListener('click', () => { 
+    // Verificar si había notificaciones pendientes de la limpieza
+    if (deletedFavCount > 0) {
+        const message = deletedFavCount === 1 
+            ? "Uno de tus favoritos ya no está disponible." 
+            : `Se eliminaron ${deletedFavCount} favoritos que ya no están disponibles.`;
+        
+        showTemporaryAlert(message, 'warning');
+        
+        // Reseteamos a 0 para que no salga la alerta cada vez
+        deletedFavCount = 0; 
+    }
+
+    renderFavoritesList(); 
+    favModal.classList.remove('hidden'); 
+    document.body.classList.add('overflow-hidden'); 
+});
+
 function closeFavModal() { favModal.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); }
 closeFavBtn.addEventListener('click', closeFavModal); favBackdrop.addEventListener('click', closeFavModal);
 window.addEventListener('scroll', () => { if (window.scrollY > 300) { scrollTopBtn.classList.remove('hidden'); } else { scrollTopBtn.classList.add('hidden'); } });
@@ -276,9 +318,54 @@ function getCategoryIcon(cat) { const icons = { 'Gastronomía': '🍔', 'Indumen
 function getTagIcon(tag) { const icons = { 'Delivery': '🛵', 'Tarjetas': '💳', 'WiFi': '📶', 'Pet Friendly': '🐶', 'Aire Acond.': '❄️' }; return icons[tag] || '•'; }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadCategories(); // <--- IMPORTANTE: Carga las categorías dinámicas en el filtro
+  loadCategories(); 
   loadBusinesses();
   document.getElementById('searchBusiness').addEventListener('input', filterBusinesses);
   document.getElementById('categoryFilter').addEventListener('change', filterBusinesses);
   window.filterBusinesses = filterBusinesses;
 });
+
+/**
+ * Muestra una alerta temporal superior (ESTILO MEJORADO).
+ * Tipos: 'success' (verde), 'warning' (naranja), 'error' (rojo)
+ */
+function showTemporaryAlert(message, type = 'info') {
+    // Verificar si ya existe el contenedor, si no, crearlo
+    let alertDiv = document.getElementById('tempAlert');
+    if (!alertDiv) {
+        alertDiv = document.createElement('div');
+        alertDiv.id = 'tempAlert';
+        alertDiv.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-2xl z-[5000] text-white font-medium text-sm transition-all duration-500 opacity-0 flex items-center gap-2 border border-white/20 backdrop-blur-md';
+        document.body.appendChild(alertDiv);
+    }
+
+    // Definir colores e iconos según el tipo
+    const configs = {
+        success: { bg: 'bg-green-600', icon: '✅' },
+        warning: { bg: 'bg-orange-500', icon: '⚠️' },
+        error:   { bg: 'bg-red-600', icon: '❌' },
+        info:    { bg: 'bg-blue-600', icon: 'ℹ️' }
+    };
+    
+    const config = configs[type] || configs.info;
+
+    // Resetear clases de color anteriores y aplicar las nuevas
+    alertDiv.className = alertDiv.className.replace(/bg-\w+-\d+/g, '');
+    alertDiv.classList.add(config.bg);
+    
+    alertDiv.innerHTML = `<span>${config.icon}</span> <span>${message}</span>`;
+
+    // Mostrar
+    requestAnimationFrame(() => {
+        alertDiv.classList.remove('opacity-0', '-translate-y-full');
+    });
+
+    // Ocultar después de 5 segundos
+    setTimeout(() => {
+        alertDiv.classList.add('opacity-0');
+        // Remover del DOM tras la animación
+        setTimeout(() => {
+            if(alertDiv.parentNode) alertDiv.parentNode.removeChild(alertDiv);
+        }, 500);
+    }, 5000);
+}
